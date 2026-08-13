@@ -1,43 +1,92 @@
-export default function About() {
+import Image from 'next/image';
+import Link from 'next/link';
+
+export default function AboutPage() {
   return (
-    <div className="pt-32 pb-24 container mx-auto px-6">
-      <h1 className="text-5xl font-bold text-center mb-12">About Bhuselle</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-24">
-        <div className="h-96 bg-secondary rounded-lg flex items-center justify-center text-foreground/20 text-4xl overflow-hidden">
-          Our Story Image
-        </div>
-        <div>
-          <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-          <p className="text-foreground/80 mb-4 leading-relaxed">
-            Bhuselle was founded on a simple principle: high-end fashion should be accessible, sustainable, and timeless. We travel the world to source the finest materials, working closely with artisans who have dedicated their lives to their craft.
-          </p>
-          <p className="text-foreground/80 leading-relaxed">
-            Every piece in our collection is designed with the modern individual in mind. We believe that what you wear is an extension of who you are, and our goal is to help you express your unique identity with confidence and elegance.
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <div className="relative w-full h-[400px] bg-[#4A7294] flex items-center justify-center text-center">
+        <div className="absolute inset-0 bg-black/10 z-0"></div>
+        <div className="relative z-10 px-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">About Daisy</h1>
+          <p className="text-lg text-white/90 max-w-2xl mx-auto">
+            Redefining elegance with timeless pieces designed for the modern individual.
           </p>
         </div>
       </div>
 
-      <div className="text-center mb-16">
-        <h2 className="text-3xl font-bold mb-4">Our Core Values</h2>
-        <p className="text-foreground/60 max-w-2xl mx-auto">The principles that guide everything we do</p>
+      {/* Story Section */}
+      <div className="container mx-auto px-6 py-24 max-w-6xl">
+        <div className="flex flex-col md:flex-row items-center gap-16">
+          <div className="w-full md:w-1/2">
+            <div className="relative aspect-[4/5] bg-gray-100">
+              <Image 
+                src="/images/hero-clean.png" 
+                alt="The Daisy Story"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+          </div>
+          <div className="w-full md:w-1/2 space-y-6">
+            <h2 className="text-sm font-bold text-[#4A7294] uppercase tracking-widest">Our Story</h2>
+            <h3 className="text-4xl font-bold text-gray-900 leading-tight">
+              Elevating Everyday Elegance
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              Founded on the belief that fashion is a powerful form of self-expression, Daisy brings you a curated collection of premium apparel and accessories. We blend classic silhouettes with contemporary design to create pieces that are both versatile and striking.
+            </p>
+            <p className="text-gray-600 leading-relaxed">
+              Every stitch, fabric choice, and finishing detail is carefully considered to ensure that our garments not only look beautiful but feel extraordinary to wear. Whether you are stepping out for a casual afternoon or preparing for a special evening, Daisy is designed to make you feel confident and effortless.
+            </p>
+            <div className="pt-4">
+              <Link href="/shop" className="inline-block bg-primary text-white font-bold text-sm px-8 py-4 uppercase tracking-wider hover:bg-primary/90 transition-colors">
+                Explore Our Collection
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="p-8 border border-secondary rounded-lg text-center hover:shadow-xl transition-shadow bg-background">
-           <div className="text-4xl mb-4">🌿</div>
-           <h3 className="text-xl font-bold mb-4">Sustainability</h3>
-           <p className="text-foreground/70">We are committed to ethical sourcing and reducing our environmental footprint.</p>
-        </div>
-        <div className="p-8 border border-secondary rounded-lg text-center hover:shadow-xl transition-shadow bg-background">
-           <div className="text-4xl mb-4">💎</div>
-           <h3 className="text-xl font-bold mb-4">Quality</h3>
-           <p className="text-foreground/70">Uncompromising standards for materials and craftsmanship in every garment.</p>
-        </div>
-        <div className="p-8 border border-secondary rounded-lg text-center hover:shadow-xl transition-shadow bg-background">
-           <div className="text-4xl mb-4">🤝</div>
-           <h3 className="text-xl font-bold mb-4">Community</h3>
-           <p className="text-foreground/70">Building lasting relationships with our customers and supporting our artisans.</p>
+      {/* Values Section */}
+      <div className="bg-gray-50 py-24">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Our Core Values</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              The principles that guide our design, sourcing, and customer experience.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="bg-white p-8 text-center shadow-sm">
+              <div className="w-16 h-16 bg-[#4A7294]/10 text-[#4A7294] rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                ✨
+              </div>
+              <h4 className="font-bold text-lg mb-3">Premium Quality</h4>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                We source only the finest materials to ensure our garments stand the test of time.
+              </p>
+            </div>
+            <div className="bg-white p-8 text-center shadow-sm">
+              <div className="w-16 h-16 bg-[#4A7294]/10 text-[#4A7294] rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                🌿
+              </div>
+              <h4 className="font-bold text-lg mb-3">Sustainable Practices</h4>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Committed to minimizing our environmental footprint through mindful production.
+              </p>
+            </div>
+            <div className="bg-white p-8 text-center shadow-sm">
+              <div className="w-16 h-16 bg-[#4A7294]/10 text-[#4A7294] rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                🤝
+              </div>
+              <h4 className="font-bold text-lg mb-3">Customer First</h4>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Your satisfaction is our priority, from the shopping experience to the final fit.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

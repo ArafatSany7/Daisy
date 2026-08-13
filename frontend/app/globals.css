@@ -34,15 +34,17 @@
   --sale: #FFC107; /* Golden yellow for sale badges */
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: var(--font-sans);
-}
+@layer base {
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: var(--font-sans);
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  color: #111;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: #111;
+  }
 }
 
 .logo-text {

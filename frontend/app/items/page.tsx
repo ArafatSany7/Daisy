@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function ExplorePage() {
-  const [items, setItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<unknown[]>([]);
 
   useEffect(() => {
     // Fetch from backend (fallback to mock if server is down)
@@ -24,7 +23,6 @@ export default function ExplorePage() {
              rating: 4.5
            })));
         }
-        setLoading(false);
       })
       .catch(() => {
         // Fallback Mock data
@@ -35,7 +33,6 @@ export default function ExplorePage() {
           category: i % 2 === 0 ? 'Men' : 'Women',
           rating: 4.5
         })));
-        setLoading(false);
       });
   }, []);
 
@@ -93,7 +90,7 @@ export default function ExplorePage() {
               <div className="text-xs text-accent font-bold mb-2">{item.category.toUpperCase()}</div>
               <h3 className="text-lg font-bold mb-2">{item.title}</h3>
               <div className="flex justify-between items-center">
-                 <span className="text-lg font-medium">${item.price.toFixed(2)}</span>
+                 <span className="text-lg font-medium">৳{item.price.toFixed(2)}</span>
                  <div className="flex text-accent text-sm">
                    ★ ★ ★ ★ {item.rating % 1 !== 0 ? '☆' : '★'}
                  </div>

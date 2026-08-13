@@ -28,7 +28,7 @@ export default function ItemDetails({ params }: { params: { id: string } }) {
         {/* Details */}
         <div>
           <h1 className="text-4xl font-bold mb-4">Premium Item {params.id}</h1>
-          <div className="text-2xl font-medium mb-6">$120.00</div>
+          <div className="text-2xl font-medium mb-6">৳120.00</div>
           
           <div className="flex items-center space-x-4 mb-8">
             <div className="flex text-accent">
@@ -78,7 +78,7 @@ export default function ItemDetails({ params }: { params: { id: string } }) {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <div className="mt-4 text-foreground/70">
-                Free shipping on orders over $200. Returns accepted within 30 days.
+                Free shipping on orders over ৳200. Returns accepted within 30 days.
               </div>
             </details>
           </div>

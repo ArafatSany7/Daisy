@@ -3,9 +3,6 @@
 import { useState, useEffect } from 'react';
 
 export default function AdminDashboard() {
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => setIsClient(true), []);
-
   return (
     <div>
       <h1 className="text-3xl font-bold mb-8">Admin Overview</h1>
@@ -13,7 +10,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
         <div className="bg-secondary/30 p-6 rounded-lg border border-secondary">
            <h3 className="text-foreground/60 mb-2">Total Revenue</h3>
-           <div className="text-3xl font-bold">$124,500</div>
+           <div className="text-3xl font-bold">৳124,500</div>
         </div>
         <div className="bg-secondary/30 p-6 rounded-lg border border-secondary">
            <h3 className="text-foreground/60 mb-2">Total Users</h3>
@@ -92,7 +89,7 @@ export default function AdminDashboard() {
             {[1, 2, 3, 4, 5].map(i => (
               <tr key={i} className="border-b border-secondary/50 hover:bg-secondary/20 transition-colors">
                 <td className="py-4 px-4">Customer {i}</td>
-                <td className="py-4 px-4">${(i * 150).toFixed(2)}</td>
+                <td className="py-4 px-4">৳{(i * 150).toFixed(2)}</td>
                 <td className="py-4 px-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold ${i % 2 === 0 ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}`}>
                     {i % 2 === 0 ? 'Completed' : 'Pending'}

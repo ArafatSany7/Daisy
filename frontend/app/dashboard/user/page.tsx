@@ -39,7 +39,7 @@ export default function UserDashboard() {
                     Delivered
                   </span>
                 </td>
-                <td className="py-4 px-4">$240.00</td>
+                <td className="py-4 px-4">৳240.00</td>
               </tr>
             ))}
           </tbody>
