@@ -12,7 +12,7 @@ function StatCounter({ value, suffix, isFloat = false }: { value: number, suffix
   const count = useMotionValue(0);
   
   const formattedCount = useTransform(count, (latest) => {
-    return isFloat ? latest.toFixed(1) : Math.round(latest);
+    return isFloat ? latest.toFixed(1) : Math.round(latest).toString();
   });
 
   useEffect(() => {

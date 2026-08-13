@@ -3,8 +3,17 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+interface Item {
+  id: string;
+  title: string;
+  price: number;
+  category: string;
+  rating: number;
+  image?: string;
+}
+
 export default function ExplorePage() {
-  const [items, setItems] = useState<unknown[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
     // Fetch from backend (fallback to mock if server is down)
