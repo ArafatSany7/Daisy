@@ -5,6 +5,7 @@ import { motion, Variants, useInView, useMotionValue, useTransform, animate } fr
 import Image from 'next/image';
 import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
+import FadeIn from '@/components/animations/FadeIn';
 
 function StatCounter({ value, suffix, isFloat = false }: { value: number, suffix: string, isFloat?: boolean }) {
   const ref = useRef(null);
