@@ -197,8 +197,10 @@ export default function Home() {
                 { id: "na-6", name: "Daisy Remi Linen Bucket Hat", price: 32, img: "/products/20-600x600.jpg" },
                 { id: "na-7", name: "Daisy Audrey Ballet Flats", price: 49, img: "/products/22-600x600.jpg" },
                 { id: "na-8", name: "Daisy Maren Structured Handbag", price: 49, img: "/products/25-600x600.jpg" },
-              ].map((item) => (
-                <ProductCard key={item.id} {...item} />
+              ].map((item, idx) => (
+                <FadeIn key={item.id} delay={0.1 * (idx % 4)}>
+                  <ProductCard {...item} />
+                </FadeIn>
               ))}
             </div>
           </div>
@@ -215,21 +217,23 @@ export default function Home() {
               { title: "Comfort and structure in motion", desc: "Suscipit fermentum dolor urna pede felis venenatis litora dignissim maecenas", img: "/banners/banner_8.jpg", dark: true },
               { title: "Finishing touches for every look", desc: "Suscipit fermentum dolor urna pede felis venenatis litora dignissim maecenas", img: "/banners/banner_9.jpg", dark: false },
             ].map((card, i) => (
-              <div key={i} className={`relative aspect-[3/4] overflow-hidden group ${i === 1 ? 'mt-0 md:mt-12' : ''}`}>
-                <Image 
-                  src={card.img}
-                  alt={card.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-6 flex justify-center">
-                  <div className={`p-6 w-full ${card.dark ? 'bg-[#2A2A2A] text-white' : 'bg-white text-foreground'} shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500`}>
-                    <h3 className="font-bold text-[15px] mb-2">{card.title}</h3>
-                    <p className={`text-[12px] leading-relaxed ${card.dark ? 'text-gray-400' : 'text-gray-500'}`}>{card.desc}</p>
+              <FadeIn key={i} delay={0.2 * i} className={i === 1 ? 'mt-0 md:mt-12' : ''}>
+                <div className={`relative aspect-[3/4] overflow-hidden group h-full`}>
+                  <Image 
+                    src={card.img}
+                    alt={card.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 flex justify-center">
+                    <div className={`p-6 w-full ${card.dark ? 'bg-[#2A2A2A] text-white' : 'bg-white text-foreground'} shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500`}>
+                      <h3 className="font-bold text-[15px] mb-2">{card.title}</h3>
+                      <p className={`text-[12px] leading-relaxed ${card.dark ? 'text-gray-400' : 'text-gray-500'}`}>{card.desc}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </FadeIn>
             ))}
           </div>
         </div>
@@ -258,8 +262,10 @@ export default function Home() {
               { id: "sale-6", name: "Daisy Aria Everyday Hoodie", oldPrice: 75, price: 65, sale: true, img: "/products/16-1-600x600.jpg" },
               { id: "sale-7", name: "Daisy Kaia Cropped Jacket", oldPrice: 129, price: 110, sale: true, img: "/products/17-600x600.jpg" },
               { id: "sale-8", name: "Daisy Nova Rib Tank Top", oldPrice: 35, price: 25, sale: true, img: "/products/23-600x600.jpg" },
-            ].map((item) => (
-              <ProductCard key={item.id} {...item} />
+            ].map((item, idx) => (
+              <FadeIn key={item.id} delay={0.1 * (idx % 4)}>
+                <ProductCard {...item} />
+              </FadeIn>
             ))}
           </div>
 
