@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { CartProvider } from '@/app/context/CartContext';
+import AOSInit from '@/components/animations/AOSInit';
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,7 +34,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning className={`${inter.variable} ${plusJakarta.variable} ${playfair.variable} font-sans antialiased min-h-screen flex flex-col text-foreground bg-background`}>
+      <body suppressHydrationWarning className={`${inter.variable} ${plusJakarta.variable} ${playfair.variable} font-sans antialiased min-h-screen flex flex-col text-foreground bg-background overflow-x-hidden`}>
+        <AOSInit />
         <CartProvider>
           <Navbar />
           <main className="flex-grow">
