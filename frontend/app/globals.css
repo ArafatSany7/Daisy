@@ -144,6 +144,22 @@
   @apply underline decoration-ink/30 underline-offset-4 hover:decoration-ink transition-colors;
 }
 
+/* Hero entrance: CSS-only so it runs before hydration. Stagger via --i. */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-in {
+  animation: hero-in 0.7s var(--ease-out-soft) both;
+  animation-delay: calc(0.1s + var(--i, 0) * 0.08s);
+}
+
 /* Hide scrollbars on horizontally-scrolling chip rows. */
 .no-scrollbar {
   scrollbar-width: none;

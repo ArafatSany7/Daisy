@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
 import { ease, spring } from '@/lib/motion';
 
@@ -42,7 +42,7 @@ export default function AddToCartButton({
   const success = status === 'success';
 
   return (
-    <motion.button
+    <m.button
       type="button"
       onClick={handleClick}
       whileTap={{ scale: 0.96 }}
@@ -56,7 +56,7 @@ export default function AddToCartButton({
     >
       <AnimatePresence mode="popLayout" initial={false}>
         {success ? (
-          <motion.span
+          <m.span
             key="success"
             className="inline-flex items-center gap-2"
             initial={{ y: 18, opacity: 0 }}
@@ -64,7 +64,7 @@ export default function AddToCartButton({
             exit={{ y: -18, opacity: 0 }}
             transition={{ duration: 0.22, ease: ease.out }}
           >
-            <motion.svg
+            <m.svg
               width="18"
               height="18"
               viewBox="0 0 24 24"
@@ -75,17 +75,17 @@ export default function AddToCartButton({
               strokeLinejoin="round"
               aria-hidden="true"
             >
-              <motion.path
+              <m.path
                 d="M5 12.5l4.5 4.5L19 7.5"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 0.3, ease: ease.out, delay: 0.05 }}
               />
-            </motion.svg>
+            </m.svg>
             {successLabel}
-          </motion.span>
+          </m.span>
         ) : (
-          <motion.span
+          <m.span
             key="idle"
             className="inline-flex items-center gap-2"
             initial={{ y: 18, opacity: 0 }}
@@ -95,9 +95,9 @@ export default function AddToCartButton({
           >
             {icon && <ShoppingBag size={18} aria-hidden="true" />}
             {label}
-          </motion.span>
+          </m.span>
         )}
       </AnimatePresence>
-    </motion.button>
+    </m.button>
   );
 }

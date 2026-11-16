@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ShoppingBag, User, Menu, X, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
+import { m, AnimatePresence, useAnimationControls } from 'framer-motion';
 import { useCart } from '@/app/context/CartContext';
 import CartSidebar from '@/components/cart/CartSidebar';
 import SearchForm from '@/components/layout/SearchForm';
@@ -22,6 +22,7 @@ export default function Navbar() {
   const { cartCount, toggleCart } = useCart();
   const pathname = usePathname();
   const badgeControls = useAnimationControls();
+  const shopToggleRef = useRef<HTMLButtonElement>(null);
 
   // Replay a small spring "bump" on the badge whenever the cart count changes.
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function Navbar() {
   const cartBadge = (
     <AnimatePresence>
       {cartCount > 0 && (
-        <motion.span
+        <m.span
           key="badge"
           initial={{ scale: 0.6, opacity: 0 }}
           animate={badgeControls}
@@ -66,7 +67,7 @@ export default function Navbar() {
           className="absolute top-1 right-0.5 bg-accent text-white text-[11px] font-semibold min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full ring-2 ring-surface tabular-nums"
         >
           {cartCount}
-        </motion.span>
+        </m.span>
       )}
     </AnimatePresence>
   );
@@ -88,7 +89,7 @@ export default function Navbar() {
       >
         <div className="container mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-6">
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Daisy home">
-            <Image src="/logo.png" alt="" width={34} height={34} className="object-contain" priority />
+            <Image src="/logo.png" alt="" width={34} height={34} className="object-contain" />
             <span className="logo-text text-[34px] leading-none text-ink">Daisy</span>
           </Link>
 
@@ -100,12 +101,23 @@ export default function Navbar() {
                   className="relative"
                   onMouseEnter={() => setIsShopMenuOpen(true)}
                   onMouseLeave={() => setIsShopMenuOpen(false)}
+                  // Keyboard: Esc closes and returns focus to the toggle; tabbing out closes the menu.
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape' && isShopMenuOpen) {
+                      setIsShopMenuOpen(false);
+                      shopToggleRef.current?.focus();
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setIsShopMenuOpen(false);
+                  }}
                 >
                   <div className="flex items-center gap-0.5">
                     <Link href="/shop" className={linkClass('/shop')} aria-current={isActive('/shop') ? 'page' : undefined}>
                       Shop
                     </Link>
                     <button
+                      ref={shopToggleRef}
                       type="button"
                       onClick={() => setIsShopMenuOpen((o) => !o)}
                       aria-expanded={isShopMenuOpen}
@@ -120,7 +132,7 @@ export default function Navbar() {
                   </div>
                   <AnimatePresence>
                     {isShopMenuOpen && (
-                      <motion.div
+                      <m.div
                         initial={{ opacity: 0, y: 8, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.98, transition: { duration: 0.12 } }}
@@ -157,7 +169,7 @@ export default function Navbar() {
                             </div>
                           </div>
                         </div>
-                      </motion.div>
+                      </m.div>
                     )}
                   </AnimatePresence>
                 </div>
@@ -197,7 +209,7 @@ export default function Navbar() {
 
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
@@ -231,7 +243,7 @@ export default function Navbar() {
                   <User size={18} /> Account
                 </Link>
               </nav>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </header>

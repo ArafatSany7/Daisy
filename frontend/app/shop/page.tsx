@@ -159,7 +159,10 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
             </Link>
           </div>
         ) : (
-          <ProductGrid products={visible} />
+          <>
+            <h2 className="sr-only">Products</h2>
+            <ProductGrid products={visible} />
+          </>
         )}
 
         {totalPages > 1 && (

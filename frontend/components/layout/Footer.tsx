@@ -100,7 +100,8 @@ export default function Footer() {
               </Link>
             ))}
           </nav>
-          <Link href="/payment-methods" className="flex flex-wrap gap-1.5" aria-label="Accepted payment methods">
+          <Link href="/payment-methods" className="flex flex-wrap gap-1.5">
+            <span className="sr-only">Accepted payment methods: </span>
             {paymentBadges.map((b) => (
               <span key={b} className="px-2 py-1 rounded-md border border-white/15 text-[11px] font-semibold text-white/75">
                 {b}

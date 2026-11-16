@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { Plus } from 'lucide-react';
 
 const items = [
@@ -47,7 +47,7 @@ export default function WhoWeAreAccordion() {
             </h3>
             <AnimatePresence initial={false}>
               {isOpen && (
-                <motion.div
+                <m.div
                   id={panelId}
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
@@ -56,7 +56,7 @@ export default function WhoWeAreAccordion() {
                   className="overflow-hidden"
                 >
                   <p className="pb-5 text-muted">{item.body}</p>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>

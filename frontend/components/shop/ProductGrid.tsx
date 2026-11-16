@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import ProductCard from '@/components/product/ProductCard';
 import type { Product } from '@/lib/products';
 import { ease, spring } from '@/lib/motion';
@@ -13,10 +13,10 @@ import { ease, spring } from '@/lib/motion';
  */
 export default function ProductGrid({ products }: { products: Product[] }) {
   return (
-    <motion.ul layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-6">
+    <m.ul layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-6">
       <AnimatePresence mode="popLayout" initial={false}>
         {products.map((product, idx) => (
-          <motion.li
+          <m.li
             key={product.id}
             layout
             initial={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -30,9 +30,9 @@ export default function ProductGrid({ products }: { products: Product[] }) {
             }}
           >
             <ProductCard product={product} priority={idx < 4} />
-          </motion.li>
+          </m.li>
         ))}
       </AnimatePresence>
-    </motion.ul>
+    </m.ul>
   );
 }

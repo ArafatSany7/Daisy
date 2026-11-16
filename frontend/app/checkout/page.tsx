@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, type Variants } from 'framer-motion';
+import { m, type Variants } from 'framer-motion';
 import { Check, Lock } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
 import { ease } from '@/lib/motion';
@@ -105,40 +105,40 @@ export default function CheckoutPage() {
   if (orderNumber) {
     return (
       <div className="container mx-auto px-4 sm:px-6 py-20 md:py-28 max-w-xl text-center">
-        <motion.div
+        <m.div
           className="mx-auto mb-8 w-20 h-20 rounded-full bg-success/10 flex items-center justify-center"
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 18 }}
         >
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-success" aria-hidden="true">
-            <motion.path
+            <m.path
               d="M5 12.5l4.5 4.5L19 7.5"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
               transition={{ duration: 0.45, ease: ease.out, delay: 0.2 }}
             />
           </svg>
-        </motion.div>
-        <motion.div variants={confirmContainer} initial="hidden" animate="visible">
-          <motion.h1 variants={confirmItem} className="font-display text-4xl md:text-5xl mb-3">
+        </m.div>
+        <m.div variants={confirmContainer} initial="hidden" animate="visible">
+          <m.h1 variants={confirmItem} className="font-display text-4xl md:text-5xl mb-3">
             Thank you for your order
-          </motion.h1>
-          <motion.p variants={confirmItem} className="text-muted mb-2">
+          </m.h1>
+          <m.p variants={confirmItem} className="text-muted mb-2">
             Your order number is <span className="font-semibold text-ink">{orderNumber}</span>.
-          </motion.p>
-          <motion.p variants={confirmItem} className="text-muted text-sm mb-10">
+          </m.p>
+          <m.p variants={confirmItem} className="text-muted text-sm mb-10">
             We&apos;ll email you a confirmation with tracking details shortly.
-          </motion.p>
-          <motion.div variants={confirmItem} className="flex flex-col sm:flex-row gap-3 justify-center">
+          </m.p>
+          <m.div variants={confirmItem} className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/shop" className="btn btn-primary">
               Continue shopping
             </Link>
             <Link href="/track-order" className="btn btn-outline">
               Track your order
             </Link>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </div>
     );
   }

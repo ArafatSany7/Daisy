@@ -1,7 +1,7 @@
 "use client";
 
 import * as Dialog from '@radix-ui/react-dialog';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { X } from 'lucide-react';
 import { ease, spring } from '@/lib/motion';
 
@@ -31,7 +31,7 @@ export function Sheet({
         {open && (
           <Dialog.Portal forceMount>
             <Dialog.Overlay asChild forceMount>
-              <motion.div
+              <m.div
                 className="fixed inset-0 z-[60] bg-ink/35 backdrop-blur-[2px]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { duration: 0.3, ease: ease.out } }}
@@ -39,7 +39,7 @@ export function Sheet({
               />
             </Dialog.Overlay>
             <Dialog.Content asChild forceMount {...(description ? {} : { 'aria-describedby': undefined })}>
-              <motion.aside
+              <m.aside
                 className="fixed right-0 top-0 z-[60] h-dvh w-full sm:max-w-[440px] bg-surface flex flex-col shadow-[-24px_0_60px_-20px_rgb(0_0_0/0.3)] focus:outline-none"
                 initial={{ x: '100%' }}
                 animate={{ x: 0, transition: spring.smooth }}
@@ -59,7 +59,7 @@ export function Sheet({
                 ) : null}
                 <div className="flex-1 overflow-y-auto overscroll-contain">{children}</div>
                 {footer}
-              </motion.aside>
+              </m.aside>
             </Dialog.Content>
           </Dialog.Portal>
         )}

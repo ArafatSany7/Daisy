@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { ease } from '@/lib/motion';
 
@@ -17,7 +17,7 @@ export default function FadeIn({
   y?: number;
 }) {
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -25,6 +25,6 @@ export default function FadeIn({
       transition={{ duration: 0.6, ease: ease.out, delay }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

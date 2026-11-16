@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
+import { animate, m, useInView, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
 
 export default function StatCounter({ value, suffix = '', decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -19,7 +19,7 @@ export default function StatCounter({ value, suffix = '', decimals = 0 }: { valu
 
   return (
     <span ref={ref} className="tabular-nums">
-      <motion.span>{text}</motion.span>
+      <m.span>{text}</m.span>
       {suffix}
     </span>
   );

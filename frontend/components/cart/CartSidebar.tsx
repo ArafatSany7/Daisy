@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { Lock, Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
 import { Sheet } from '@/components/ui/sheet';
@@ -88,7 +88,7 @@ export default function CartSidebar() {
               aria-valuemax={100}
               aria-valuenow={Math.round(progress)}
             >
-              <motion.div
+              <m.div
                 className={`h-full rounded-full origin-left ${remaining > 0 ? 'bg-accent' : 'bg-success'}`}
                 initial={false}
                 animate={{ scaleX: progress / 100 }}
@@ -100,7 +100,7 @@ export default function CartSidebar() {
           <ul className="border-t border-line">
             <AnimatePresence initial={false}>
               {cartItems.map((item) => (
-                <motion.li
+                <m.li
                   key={item.id}
                   layout
                   initial={{ opacity: 0, x: 24 }}
@@ -139,7 +139,7 @@ export default function CartSidebar() {
                     </div>
                     <div className="mt-auto pt-3 flex items-center justify-between">
                       <div className="flex items-center rounded-full border border-line bg-white">
-                        <motion.button
+                        <m.button
                           type="button"
                           whileTap={{ scale: 0.85 }}
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -148,11 +148,11 @@ export default function CartSidebar() {
                           aria-label={`Decrease quantity of ${item.name}`}
                         >
                           <Minus size={13} />
-                        </motion.button>
+                        </m.button>
                         <span className="w-6 text-center text-sm font-semibold tabular-nums" aria-label={`Quantity ${item.quantity}`}>
                           {item.quantity}
                         </span>
-                        <motion.button
+                        <m.button
                           type="button"
                           whileTap={{ scale: 0.85 }}
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
@@ -160,12 +160,12 @@ export default function CartSidebar() {
                           aria-label={`Increase quantity of ${item.name}`}
                         >
                           <Plus size={13} />
-                        </motion.button>
+                        </m.button>
                       </div>
                       <span className="text-sm font-semibold tabular-nums">{formatPrice(item.price * item.quantity)}</span>
                     </div>
                   </div>
-                </motion.li>
+                </m.li>
               ))}
             </AnimatePresence>
           </ul>

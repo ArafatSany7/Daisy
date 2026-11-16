@@ -14,7 +14,7 @@ import {
   products,
   relatedProducts,
 } from '@/lib/products';
-import { formatPrice, site } from '@/lib/site';
+import { formatPrice, site, siteUrl } from '@/lib/site';
 
 type Params = Promise<{ slug: string }>;
 
@@ -29,7 +29,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return {
     title: product.title,
     description: product.description,
-    openGraph: { images: product.images.slice(0, 1) },
+    alternates: { canonical: `/product/${product.slug}` },
+    openGraph: { type: 'website', title: product.title, description: product.description, images: product.images.slice(0, 1) },
   };
 }
 
@@ -42,8 +43,34 @@ export default async function ProductPage({ params }: { params: Params }) {
   const related = relatedProducts(product);
   const onSale = isOnSale(product);
 
+  // Product structured data for rich results. Ratings are intentionally omitted
+  // until they come from real customer reviews.
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    description: product.description,
+    sku: product.id,
+    image: product.images.map((img) => `${siteUrl}${encodeURI(img)}`),
+    category: category.name,
+    brand: { '@type': 'Brand', name: site.name },
+    offers: {
+      '@type': 'Offer',
+      url: `${siteUrl}/product/${product.slug}`,
+      priceCurrency: 'BDT',
+      price: product.price,
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+    },
+  };
+
   return (
     <div className="bg-surface pb-24">
+      <script
+        type="application/ld+json"
+        // JSON.stringify output with "<" escaped so it cannot close the script tag.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
       <div className="container mx-auto px-4 sm:px-6 pt-8">
         <nav className="text-sm text-muted mb-8" aria-label="Breadcrumb">
           <ol className="flex flex-wrap items-center gap-1.5">

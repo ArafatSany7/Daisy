@@ -4,7 +4,7 @@ import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import AppProviders from '@/components/providers/AppProviders';
-import { site } from '@/lib/site';
+import { site, siteUrl } from '@/lib/site';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -22,6 +22,9 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  openGraph: { siteName: site.name, type: 'website', locale: 'en_BD' },
+  twitter: { card: 'summary_large_image' },
   title: { default: 'Daisy | Timeless womenswear', template: '%s | Daisy' },
   description: site.description,
 };

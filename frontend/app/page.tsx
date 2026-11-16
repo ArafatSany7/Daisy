@@ -116,7 +116,7 @@ export default function Home() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
           {feature && (
             <FadeIn className="col-span-2 lg:row-span-2 flex flex-col">
-              <ProductCard product={feature} variant="feature" priority />
+              <ProductCard product={feature} variant="feature" />
             </FadeIn>
           )}
           {restArrivals.slice(0, 4).map((p, i) => (

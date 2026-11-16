@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { motion, useAnimationControls } from 'framer-motion';
+import { m, useAnimationControls } from 'framer-motion';
 import { Minus, Plus, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import AddToCartButton from '@/components/cart/AddToCartButton';
 import { useAddToCart } from '@/components/cart/useAddToCart';
@@ -49,7 +49,7 @@ export default function ProductPurchase({ product }: { product: Product }) {
               Size guide
             </Link>
           </div>
-          <motion.div animate={sizeRow} className="flex flex-wrap gap-2" aria-describedby={showSizeError ? 'size-error' : undefined}>
+          <m.div animate={sizeRow} className="flex flex-wrap gap-2" aria-describedby={showSizeError ? 'size-error' : undefined}>
             {product.sizes!.map((s) => (
               <button
                 key={s}
@@ -70,7 +70,7 @@ export default function ProductPurchase({ product }: { product: Product }) {
                 {s}
               </button>
             ))}
-          </motion.div>
+          </m.div>
           {showSizeError && (
             <p id="size-error" role="alert" className="text-sm text-signal mt-3">
               Choose a size to add this to your bag.
