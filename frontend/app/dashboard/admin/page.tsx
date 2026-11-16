@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   return (
@@ -45,7 +43,7 @@ export default function AdminDashboard() {
           <div className="space-y-4">
              <div>
                <div className="flex justify-between mb-1">
-                 <span>Men's Wear</span>
+                 <span>Men&apos;s Wear</span>
                  <span className="font-bold">45%</span>
                </div>
                <div className="w-full bg-secondary rounded-full h-2">
@@ -54,7 +52,7 @@ export default function AdminDashboard() {
              </div>
              <div>
                <div className="flex justify-between mb-1">
-                 <span>Women's Wear</span>
+                 <span>Women&apos;s Wear</span>
                  <span className="font-bold">35%</span>
                </div>
                <div className="w-full bg-secondary rounded-full h-2">
@@ -96,21 +94,18 @@ export default function AdminDashboard() {
                   </span>
                 </td>
                 <td className="py-4 px-4">
-                  <button className="text-accent hover:underline">View</button>
+                  <Link href="/dashboard/admin/users" className="text-accent hover:underline">View</Link>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      
-      {/* Pagination component for the table */}
-      <div className="flex justify-between items-center mt-6 text-sm text-foreground/60">
-         <div>Showing 1 to 5 of 124 entries</div>
-         <div className="flex space-x-2">
-           <button className="px-3 py-1 border border-secondary rounded hover:bg-primary hover:text-background">Previous</button>
-           <button className="px-3 py-1 border border-secondary rounded hover:bg-primary hover:text-background">Next</button>
-         </div>
+
+      <div className="mt-6 text-sm">
+        <Link href="/dashboard/admin/analytics" className="text-accent font-bold hover:underline">
+          View all transactions &rarr;
+        </Link>
       </div>
     </div>
   );

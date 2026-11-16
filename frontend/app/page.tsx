@@ -6,6 +6,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
 import FadeIn from '@/components/animations/FadeIn';
+import CategorySidebar from '@/components/shop/CategorySidebar';
+import WhoWeAreAccordion from '@/components/home/WhoWeAreAccordion';
+import { newArrivals, saleProducts } from '@/lib/products';
+import { formatPrice, site } from '@/lib/site';
 
 function StatCounter({ value, suffix, isFloat = false }: { value: number, suffix: string, isFloat?: boolean }) {
   const ref = useRef(null);
@@ -28,7 +32,7 @@ function StatCounter({ value, suffix, isFloat = false }: { value: number, suffix
     </span>
   );
 }
-import { ShoppingBag, Package, BadgeCheck, MessageSquareText, Shirt, Glasses, Diamond, Scissors, Briefcase, Footprints } from 'lucide-react';
+import { ShoppingBag, Package, BadgeCheck, MessageSquareText, Shirt } from 'lucide-react';
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -80,7 +84,7 @@ export default function Home() {
               Explore timeless pieces that blend classic elegance with a modern twist. Embrace iconic styles and discover your perfect look
             </motion.p>
             <motion.div variants={fadeInUp}>
-              <Link href="/items" className="inline-flex items-center justify-center px-10 py-4 bg-primary text-white hover:bg-primary/90 transition-colors rounded-sm font-bold tracking-wider text-sm border border-[#F2E3D5]/20">
+              <Link href="/shop" className="inline-flex items-center justify-center px-10 py-4 bg-primary text-white hover:bg-primary/90 transition-colors rounded-sm font-bold tracking-wider text-sm border border-[#F2E3D5]/20">
                 SHOP NOW
               </Link>
             </motion.div>
@@ -118,7 +122,7 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="flex flex-wrap justify-between items-center gap-6">
             {[ 
-              { icon: <Package size={36} strokeWidth={1.5} className="text-foreground" />, title: "Free Shipping", desc: "No minimum, always ships free." },
+              { icon: <Package size={36} strokeWidth={1.5} className="text-foreground" />, title: "Free Shipping", desc: `On every order over ${formatPrice(site.freeShippingThreshold)}.` },
               { icon: <ShoppingBag size={36} strokeWidth={1.5} className="text-foreground" />, title: "Secure Checkout", desc: "Trusted & seamless experience." },
               { icon: <BadgeCheck size={36} strokeWidth={1.5} className="text-foreground" />, title: "Authenticity Guaranteed", desc: "Certified quality, 100% real." },
               { icon: <MessageSquareText size={36} strokeWidth={1.5} className="text-foreground" />, title: "Premium Support", desc: "Expert help, anytime you need." }
@@ -141,26 +145,7 @@ export default function Home() {
           
           {/* Left Sidebar */}
           <div className="w-full lg:w-[22%] space-y-6 shrink-0">
-            <div className="bg-white border border-gray-100 shadow-sm">
-              <div className="bg-primary text-white text-center font-bold text-[13px] py-4 uppercase tracking-wider">
-                POPULAR CATEGORY
-              </div>
-              <ul className="flex flex-col">
-                {[ 
-                  { name: 'Dress', icon: <Shirt size={16} /> },
-                  { name: 'Eyewear', icon: <Glasses size={16} /> },
-                  { name: 'Pants', icon: <Scissors size={16} /> },
-                  { name: 'Hoodie', icon: <Shirt size={16} /> },
-                  { name: 'Hat', icon: <Diamond size={16} /> },
-                  { name: 'Footwear', icon: <Footprints size={16} /> },
-                  { name: 'Accessories', icon: <Briefcase size={16} /> },
-                ].map((cat, idx) => (
-                  <li key={cat.name} className={`flex items-center text-[13px] text-foreground hover:text-primary cursor-pointer px-6 py-4 ${idx !== 6 ? 'border-b border-gray-100' : ''}`}>
-                    <span className="mr-4 text-primary">{cat.icon}</span> {cat.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <CategorySidebar />
 
             {/* 30% OFF Banner */}
             <div className="relative h-[350px] w-full shadow-sm overflow-hidden">
@@ -183,24 +168,15 @@ export default function Home() {
           <div className="w-full lg:w-[78%]">
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-bold text-3xl text-foreground tracking-tight">New Arrival</h2>
-              <Link href="/shop" className="bg-[#7596B8] text-white text-xs font-bold px-5 py-2 hover:bg-primary transition-colors">
-                All Product
+              <Link href="/shop?collection=new" className="bg-[#7596B8] text-white text-xs font-bold px-5 py-2 hover:bg-primary transition-colors">
+                All new arrivals
               </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[ 
-                { id: "na-1", name: "Daisy Sabine Block Heel Ankle Boots", price: 98, img: "/products/10-1-600x600.jpg" },
-                { id: "na-2", name: "Daisy Mae Pleated Midi Skirt", price: 58, img: "/products/16-2-600x600.jpg" },
-                { id: "na-3", name: "Daisy Camille Classic Trench Coat", oldPrice: 149, price: 135, sale: true, img: "/products/17-2-600x600.jpg" },
-                { id: "na-4", name: "Daisy Elise Saddle Crossbody Bag", price: 62, img: "/products/18-600x600.jpg" },
-                { id: "na-5", name: "Daisy Noelle Fine Knit Sweater", oldPrice: 68, price: 60, sale: true, img: "/products/19-600x600.jpg" },
-                { id: "na-6", name: "Daisy Remi Linen Bucket Hat", price: 32, img: "/products/20-600x600.jpg" },
-                { id: "na-7", name: "Daisy Audrey Ballet Flats", price: 49, img: "/products/22-600x600.jpg" },
-                { id: "na-8", name: "Daisy Maren Structured Handbag", price: 49, img: "/products/25-600x600.jpg" },
-              ].map((item, idx) => (
-                <FadeIn key={item.id} delay={0.1 * (idx % 4)}>
-                  <ProductCard {...item} />
+              {newArrivals().slice(0, 8).map((product, idx) => (
+                <FadeIn key={product.id} delay={0.1 * (idx % 4)}>
+                  <ProductCard product={product} />
                 </FadeIn>
               ))}
             </div>
@@ -214,12 +190,12 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[ 
-              { title: "Elevated everyday tops", desc: "Suscipit fermentum dolor urna pede felis venenatis litora dignissim maecenas", img: "/banners/banner_6.jpg", dark: false },
-              { title: "Comfort and structure in motion", desc: "Suscipit fermentum dolor urna pede felis venenatis litora dignissim maecenas", img: "/banners/banner_8.jpg", dark: true },
-              { title: "Finishing touches for every look", desc: "Suscipit fermentum dolor urna pede felis venenatis litora dignissim maecenas", img: "/banners/banner_9.jpg", dark: false },
+              { title: "Soft knits, elevated", desc: "Fine-gauge turtlenecks and cosy cardigans for every day.", img: "/banners/banner_6.jpg", dark: false, href: "/shop?category=knitwear" },
+              { title: "Tailoring with ease", desc: "Longline blazers, trenches and cropped jackets that layer over anything.", img: "/banners/banner_8.jpg", dark: true, href: "/shop?category=outerwear" },
+              { title: "Lines that move", desc: "Pleats and wide legs, cut to move with you.", img: "/banners/banner_9.jpg", dark: false, href: "/shop?category=bottoms" },
             ].map((card, i) => (
               <FadeIn key={i} delay={0.2 * i} className={i === 1 ? 'mt-0 md:mt-12' : ''}>
-                <div className={`relative aspect-[3/4] overflow-hidden group h-full`}>
+                <Link href={card.href} className={`relative block aspect-[3/4] overflow-hidden group h-full`}>
                   <Image 
                     src={card.img}
                     alt={card.title}
@@ -233,7 +209,7 @@ export default function Home() {
                       <p className={`text-[12px] leading-relaxed ${card.dark ? 'text-gray-400' : 'text-gray-500'}`}>{card.desc}</p>
                     </div>
                   </div>
-                </div>
+                </Link>
               </FadeIn>
             ))}
           </div>
@@ -247,25 +223,16 @@ export default function Home() {
           {/* Section Header */}
           <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
             <h2 className="font-bold text-3xl text-foreground tracking-tight">Product on sales</h2>
-            <Link href="/items" className="bg-[#7596B8] text-white text-xs font-bold px-5 py-2 hover:bg-primary transition-colors">
-              All Product
+            <Link href="/shop?collection=sale" className="bg-[#7596B8] text-white text-xs font-bold px-5 py-2 hover:bg-primary transition-colors">
+              Shop the sale
             </Link>
           </div>
 
           {/* Products Grid (8 Items) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
-            {[ 
-              { id: "sale-1", name: "Daisy Camille Classic Trench Coat", oldPrice: 149, price: 135, sale: true, img: "/products/7-1-600x600.jpg" },
-              { id: "sale-2", name: "Daisy Noelle Fine Knit Sweater", oldPrice: 68, price: 60, sale: true, img: "/products/8-1-600x600.jpg" },
-              { id: "sale-3", name: "Daisy Celeste Longline Blazer", oldPrice: 119, price: 100, sale: true, img: "/products/9-1-600x600.jpg" },
-              { id: "sale-4", name: "Daisy Vela Clean Sneakers", oldPrice: 59, price: 50, sale: true, img: "/products/7-1-600x600 (1).jpg" },
-              { id: "sale-5", name: "Daisy Elya Striped Shirt", oldPrice: 85, price: 70, sale: true, img: "/products/11-1-600x600.jpg" },
-              { id: "sale-6", name: "Daisy Aria Everyday Hoodie", oldPrice: 75, price: 65, sale: true, img: "/products/16-1-600x600.jpg" },
-              { id: "sale-7", name: "Daisy Kaia Cropped Jacket", oldPrice: 129, price: 110, sale: true, img: "/products/17-600x600.jpg" },
-              { id: "sale-8", name: "Daisy Nova Rib Tank Top", oldPrice: 35, price: 25, sale: true, img: "/products/23-600x600.jpg" },
-            ].map((item, idx) => (
-              <FadeIn key={item.id} delay={0.1 * (idx % 4)}>
-                <ProductCard {...item} />
+            {saleProducts().slice(0, 8).map((product, idx) => (
+              <FadeIn key={product.id} delay={0.1 * (idx % 4)}>
+                <ProductCard product={product} />
               </FadeIn>
             ))}
           </div>
@@ -287,7 +254,7 @@ export default function Home() {
                 Discover the story behind Daisy&apos;s elegance
               </h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-10 border-t border-gray-100 pt-8">
-                Facilisis turpis ultricies semper natoque imperdiet. Condimentum viverra scelerisque erat fringilla tristique cubilia. In netus et ad imperdiet non suspendisse nisl montes semper.
+                Daisy began with a simple idea: well-made pieces should be easy to find and easy to love. Every collection is designed in small runs, with fabrics and finishes chosen to last.
               </p>
               <Link href="/about" className="bg-[#7596B8] text-white text-xs font-bold px-8 py-3.5 hover:bg-primary transition-colors inline-block">
                 Discover more &rarr;
@@ -317,23 +284,7 @@ export default function Home() {
                   Driven by craftsmanship, inspired by your moments
                 </h3>
                 
-                <div className="space-y-4">
-                  {/* Accordion Item 1 (Expanded) */}
-                  <div className="border-b border-gray-200 pb-4">
-                    <h4 className="font-bold text-xs mb-3 text-foreground">Company Vision</h4>
-                    <p className="text-gray-500 text-[11px] leading-relaxed">
-                      Hac viverra est mus platea letius facilisis lobortis nec porttitor rhoncus. Ullamcorper
-                    </p>
-                  </div>
-                  {/* Accordion Item 2 */}
-                  <div className="border-b border-gray-200 pb-4">
-                    <h4 className="font-bold text-xs text-foreground opacity-60 hover:opacity-100 cursor-pointer transition-opacity">Company Mission</h4>
-                  </div>
-                  {/* Accordion Item 3 */}
-                  <div>
-                    <h4 className="font-bold text-xs text-foreground opacity-60 hover:opacity-100 cursor-pointer transition-opacity">Company Motto</h4>
-                  </div>
-                </div>
+                <WhoWeAreAccordion />
               </div>
 
             </div>

@@ -13,3 +13,13 @@ dist/
 .vercel
 *.log
 .DS_Store
+
+# AI agent / editor tooling
+.claude/
+.agents/
+.agent/
+.windsurf/
+**/.claude/
+**/.agents/
+**/.agent/
+**/.windsurf/

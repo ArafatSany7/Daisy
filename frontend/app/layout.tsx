@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { CartProvider } from '@/app/context/CartContext';
 import AOSInit from '@/components/animations/AOSInit';
+import { site } from '@/lib/site';
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,8 +24,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'Daisy',
-  description: 'Exact UI match of Bhuselle theme',
+  title: { default: 'Daisy | Timeless womenswear', template: '%s | Daisy' },
+  description: site.description,
 };
 
 export default function RootLayout({

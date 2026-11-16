@@ -1,4 +1,6 @@
 import FadeIn from '@/components/animations/FadeIn';
+import ContactForm from '@/components/forms/ContactForm';
+import { phoneHref, site } from '@/lib/site';
 
 export default function Contact() {
   return (
@@ -25,43 +27,21 @@ export default function Contact() {
               <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-xl">📞</div>
               <div>
                 <h4 className="font-bold">Call Us</h4>
-                <p className="text-foreground/60">+880 1711-000000</p>
+                <a href={phoneHref} className="text-foreground/60 hover:text-primary">{site.phone}</a>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-xl">✉️</div>
               <div>
                 <h4 className="font-bold">Email Us</h4>
-                <p className="text-foreground/60">hello@daisy.com</p>
+                <a href={`mailto:${site.email}`} className="text-foreground/60 hover:text-primary">{site.email}</a>
               </div>
             </div>
           </div>
         </FadeIn>
 
         <FadeIn delay={0.3} className="bg-secondary/30 p-8 rounded-lg border border-secondary">
-          <form className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block font-medium mb-2">First Name</label>
-                <input type="text" className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none focus:border-accent shadow-sm" required />
-              </div>
-              <div>
-                <label className="block font-medium mb-2">Last Name</label>
-                <input type="text" className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none focus:border-accent shadow-sm" required />
-              </div>
-            </div>
-            <div>
-              <label className="block font-medium mb-2">Email Address</label>
-              <input type="email" className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none focus:border-accent shadow-sm" required />
-            </div>
-            <div>
-              <label className="block font-medium mb-2">Message</label>
-              <textarea rows={5} className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none focus:border-accent shadow-sm" required></textarea>
-            </div>
-            <button type="submit" className="w-full bg-primary text-background py-4 rounded-full font-bold hover:bg-accent hover:text-primary transition-all">
-              Send Message
-            </button>
-          </form>
+          <ContactForm />
         </FadeIn>
       </div>
     </div>

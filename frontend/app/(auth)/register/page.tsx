@@ -1,14 +1,23 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Register() {
+  const router = useRouter();
+
+  // Demo only: real authentication will connect to the backend /api/auth endpoints.
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push('/dashboard/user');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background py-24 px-6">
       <div className="w-full max-w-md bg-secondary/30 p-8 rounded-lg border border-secondary">
         <h1 className="text-3xl font-bold text-center mb-8">Create Account</h1>
         
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="block font-medium mb-2">Full Name</label>
             <input 
@@ -41,20 +50,6 @@ export default function Register() {
           </button>
         </form>
 
-        <div className="mt-8 flex items-center justify-center space-x-4">
-          <div className="h-px bg-secondary flex-1"></div>
-          <span className="text-foreground/50 text-sm">Or continue with</span>
-          <div className="h-px bg-secondary flex-1"></div>
-        </div>
-
-        <div className="mt-8 flex space-x-4">
-          <button className="flex-1 py-3 border border-secondary rounded flex items-center justify-center space-x-2 hover:bg-secondary transition-colors">
-             <span>Google</span>
-          </button>
-          <button className="flex-1 py-3 border border-secondary rounded flex items-center justify-center space-x-2 hover:bg-secondary transition-colors">
-             <span>Facebook</span>
-          </button>
-        </div>
 
         <p className="mt-8 text-center text-foreground/70">
           Already have an account? <Link href="/login" className="text-accent font-medium hover:underline">Sign In</Link>

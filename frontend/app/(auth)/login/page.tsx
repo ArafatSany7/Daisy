@@ -1,14 +1,23 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function Login() {
+  const router = useRouter();
+
+  // Demo only: real authentication will connect to the backend /api/auth endpoints.
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push('/dashboard/user');
+  };
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleDemoLogin = () => {
-    setEmail('demo@bhuselle.com');
+    setEmail('demo@daisy.com');
     setPassword('password123');
   };
 
@@ -17,7 +26,7 @@ export default function Login() {
       <div className="w-full max-w-md bg-secondary/30 p-8 rounded-lg border border-secondary">
         <h1 className="text-3xl font-bold text-center mb-8">Welcome Back</h1>
         
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="block font-medium mb-2">Email Address</label>
             <input 
@@ -45,7 +54,7 @@ export default function Login() {
               <input type="checkbox" className="rounded text-accent focus:ring-accent" />
               <span>Remember me</span>
             </label>
-            <a href="#" className="text-accent hover:underline">Forgot Password?</a>
+            <Link href="/contact" className="text-accent hover:underline">Forgot Password?</Link>
           </div>
 
           <button type="submit" className="w-full bg-primary text-background py-3 rounded-full font-bold hover:bg-accent hover:text-primary transition-all">
@@ -54,25 +63,11 @@ export default function Login() {
         </form>
 
         <div className="mt-6 text-center">
-           <button onClick={handleDemoLogin} className="text-sm text-foreground/60 hover:text-primary transition-colors underline">
+           <button type="button" onClick={handleDemoLogin} className="text-sm text-foreground/60 hover:text-primary transition-colors underline">
              Use Demo Credentials
            </button>
         </div>
 
-        <div className="mt-8 flex items-center justify-center space-x-4">
-          <div className="h-px bg-secondary flex-1"></div>
-          <span className="text-foreground/50 text-sm">Or continue with</span>
-          <div className="h-px bg-secondary flex-1"></div>
-        </div>
-
-        <div className="mt-8 flex space-x-4">
-          <button className="flex-1 py-3 border border-secondary rounded flex items-center justify-center space-x-2 hover:bg-secondary transition-colors">
-             <span>Google</span>
-          </button>
-          <button className="flex-1 py-3 border border-secondary rounded flex items-center justify-center space-x-2 hover:bg-secondary transition-colors">
-             <span>Facebook</span>
-          </button>
-        </div>
 
         <p className="mt-8 text-center text-foreground/70">
           Don&apos;t have an account? <Link href="/register" className="text-accent font-medium hover:underline">Sign Up</Link>

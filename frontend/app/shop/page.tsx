@@ -1,127 +1,211 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { X } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import FadeIn from '@/components/animations/FadeIn';
+import CategorySidebar from '@/components/shop/CategorySidebar';
+import SortSelect from '@/components/shop/SortSelect';
 import {
-  Shirt,
-  Glasses,
-  Scissors,
-  Diamond,
-  Footprints,
-  Briefcase,
-  ChevronDown
-} from 'lucide-react';
+  COLLECTIONS,
+  SORT_OPTIONS,
+  getCategory,
+  queryProducts,
+  type CollectionKey,
+} from '@/lib/products';
 
-export default function ShopPage() {
-  // Array of 12 products matching the screenshots conceptually
-  const products = [
-    { id: "shop-1", name: "Daisy Elara Embroidered Midi Dress", oldPrice: 299, price: 249, sale: true, img: "/products/4-2.jpg" },
-    { id: "shop-3", name: "Daisy Lune Ankle Strap Heels", price: 64, img: "/products/6-1-600x600.jpg" },
-    { id: "shop-4", name: "Daisy Rora Raffia Tote Bag", price: 52, img: "/products/7-1-600x600.jpg" },
-    { id: "shop-5", name: "Daisy Aria Baseball Cap", price: 29, img: "/products/8-1-600x600.jpg" },
-    { id: "shop-6", name: "Daisy Nova Rib Tank Top", oldPrice: 29, price: 25, sale: true, img: "/products/9-1-600x600.jpg" },
-    { id: "shop-7", name: "Daisy Kaia Cropped Jacket", oldPrice: 79, price: 70, sale: true, img: "/products/10-1-600x600.jpg" },
-    { id: "shop-8", name: "Daisy Aria Everyday Hoodie", oldPrice: 69, price: 60, sale: true, img: "/products/11-1-600x600.jpg" },
-    { id: "shop-9", name: "Daisy Amelie Cable Knit Cardigan", price: 74, img: "/products/12-1-600x600.jpg" },
-    { id: "shop-10", name: "Daisy Maren Structured Handbag", price: 85, img: "/products/13-1-600x600.jpg" },
-    { id: "shop-11", name: "Daisy Audrey Ballet Flats", price: 49, img: "/products/14-1-600x600.jpg" },
-    { id: "shop-12", name: "Daisy Remi Linen Bucket Hat", price: 32, img: "/products/16-1-600x600.jpg" },
-  ];
+// 15 products + the promo poster tile = 4 full rows on page one.
+const PAGE_SIZE = 15;
+
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
+
+export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+  const sp = await searchParams;
+  const category = getCategory(first(sp.category));
+  return { title: category ? `${category.name} | Shop` : 'Shop' };
+}
+
+export default async function ShopPage({ searchParams }: { searchParams: SearchParams }) {
+  const sp = await searchParams;
+  const category = getCategory(first(sp.category));
+  const collectionKey = first(sp.collection);
+  const collection = collectionKey && collectionKey in COLLECTIONS ? (collectionKey as CollectionKey) : undefined;
+  const q = first(sp.q)?.trim() || undefined;
+  const sortRaw = first(sp.sort);
+  const sort = SORT_OPTIONS.some((o) => o.value === sortRaw) ? sortRaw! : 'featured';
+
+  const results = queryProducts({ category: category?.slug, collection, q, sort });
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
+  const page = Math.min(Math.max(1, Number(first(sp.page)) || 1), totalPages);
+  const visible = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // Params that should persist across sort / pagination links.
+  const baseParams: Record<string, string> = {};
+  if (category) baseParams.category = category.slug;
+  if (collection) baseParams.collection = collection;
+  if (q) baseParams.q = q;
+  if (sort !== 'featured') baseParams.sort = sort;
+
+  const hrefWith = (overrides: Record<string, string | undefined>) => {
+    const params = new URLSearchParams(baseParams);
+    for (const [k, v] of Object.entries(overrides)) {
+      if (v === undefined) params.delete(k);
+      else params.set(k, v);
+    }
+    const qs = params.toString();
+    return qs ? `/shop?${qs}` : '/shop';
+  };
+
+  const heading = q
+    ? `Results for “${q}”`
+    : category?.name ?? (collection ? COLLECTIONS[collection] : 'All products');
+
+  const activeFilters = [
+    category && { label: category.name, href: hrefWith({ category: undefined, page: undefined }) },
+    collection && { label: COLLECTIONS[collection], href: hrefWith({ collection: undefined, page: undefined }) },
+    q && { label: `“${q}”`, href: hrefWith({ q: undefined, page: undefined }) },
+  ].filter(Boolean) as { label: string; href: string }[];
+
+  const showPoster = page === 1 && !category && !collection && !q && sort === 'featured';
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      {/* Breadcrumb */}
       <div className="border-b border-gray-100 py-4">
-        <div className="container mx-auto px-6 text-sm text-gray-500">
+        <nav className="container mx-auto px-6 text-sm text-gray-500" aria-label="Breadcrumb">
           <Link href="/" className="hover:text-primary transition-colors">Home</Link>
           <span className="mx-2">&gt;</span>
-          <span className="text-gray-900">Shop</span>
-        </div>
+          {category || collection || q ? (
+            <>
+              <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
+              <span className="mx-2">&gt;</span>
+              <span className="text-gray-900">{heading}</span>
+            </>
+          ) : (
+            <span className="text-gray-900">Shop</span>
+          )}
+        </nav>
       </div>
 
       <div className="container mx-auto px-6 mt-8">
         <FadeIn>
-        <div className="flex flex-col lg:flex-row gap-8 mb-10">
-          <div className="w-full lg:w-1/4 shrink-0">
-            <div className="bg-white border border-gray-100 shadow-sm">
-              <div className="bg-[#4A7294] text-white text-center font-bold text-[13px] py-4 uppercase tracking-wider">
-                POPULAR CATEGORY
-              </div>
-              <ul className="flex flex-col">
-                {[
-                  { name: 'Dress', icon: <Shirt size={16} /> },
-                  { name: 'Eyewear', icon: <Glasses size={16} /> },
-                  { name: 'Pants', icon: <Scissors size={16} /> },
-                  { name: 'Hoodie', icon: <Shirt size={16} /> },
-                  { name: 'Hat', icon: <Diamond size={16} /> },
-                  { name: 'Footwear', icon: <Footprints size={16} /> },
-                  { name: 'Accessories', icon: <Briefcase size={16} /> },
-                ].map((cat, idx) => (
-                  <li key={cat.name} className={`flex items-center text-[13px] text-foreground hover:text-primary cursor-pointer px-6 py-4 ${idx !== 6 ? 'border-b border-gray-100' : ''}`}>
-                    <span className="mr-4 text-[#4A7294]">{cat.icon}</span> {cat.name}
-                  </li>
-                ))}
-              </ul>
+          <div className="flex flex-col lg:flex-row gap-8 mb-10">
+            <div className="w-full lg:w-1/4 shrink-0">
+              <CategorySidebar active={category?.slug} headerClassName="bg-[#4A7294]" />
             </div>
-          </div>
 
-          {/* Banner & Sorting */}
-          <div className="w-full lg:w-3/4 flex flex-col">
-            {/* Banner Image */}
-            <div className="relative w-full h-[300px] lg:h-auto lg:flex-1 bg-gray-100 mb-4">
-              <Image 
-                src="/products/5-1.jpg"
-                alt="New Season Sale Up to 40% OFF"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 75vw"
-                priority
-              />
-            </div>
-            {/* Sorting Dropdown */}
-            <div className="flex justify-end">
-              <button className="bg-black text-white text-sm px-6 py-3 flex items-center justify-between w-48">
-                Default sorting <ChevronDown size={16} className="ml-2" />
-              </button>
+            <div className="w-full lg:w-3/4 flex flex-col">
+              <Link
+                href="/shop?collection=sale"
+                className="relative block w-full h-[300px] lg:h-auto lg:flex-1 bg-gray-100 mb-4 overflow-hidden group"
+                aria-label="Shop the sale"
+              >
+                <Image
+                  src="/products/5-1.jpg"
+                  alt="New season sale — up to 40% off"
+                  fill
+                  className="object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                  sizes="(max-width: 1024px) 100vw, 75vw"
+                  priority
+                />
+              </Link>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-bold">{heading}</h1>
+                  <p className="text-sm text-gray-500">
+                    {results.length} {results.length === 1 ? 'product' : 'products'}
+                  </p>
+                </div>
+                <SortSelect value={sort} baseParams={baseParams} />
+              </div>
+              {activeFilters.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 mt-4">
+                  {activeFilters.map((f) => (
+                    <Link
+                      key={f.label}
+                      href={f.href}
+                      className="inline-flex items-center gap-1 bg-gray-100 px-3 py-1.5 text-xs hover:bg-gray-200 transition-colors"
+                      aria-label={`Remove filter ${f.label}`}
+                    >
+                      {f.label} <X size={12} />
+                    </Link>
+                  ))}
+                  <Link href="/shop" className="text-xs underline text-gray-500 hover:text-primary ml-1">
+                    Clear all
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
-        </div>
         </FadeIn>
 
-        {/* Product Grid (4 columns) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {/* Poster Image */}
-          <FadeIn delay={0}>
-          <div className="relative aspect-[4/5] bg-[#F6F6F6] mb-5 overflow-hidden h-full w-full">
-            <span className="absolute top-0 right-0 bg-[#FBB03B] text-black text-[10px] font-bold px-2 py-1 z-10 uppercase">
-              SALE!
-            </span>
-            <Image 
-              src="/products/4-2.jpg"
-              alt="30% OFF Limited Time Offer"
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover"
-            />
+        {visible.length === 0 ? (
+          <div className="text-center py-24 bg-gray-50">
+            <h2 className="text-xl font-bold mb-2">No products found</h2>
+            <p className="text-gray-500 mb-6">Try a different search or browse all products.</p>
+            <Link href="/shop" className="inline-block bg-primary text-white px-8 py-3 font-bold text-sm hover:bg-primary/90 transition-colors">
+              View all products
+            </Link>
           </div>
-          </FadeIn>
-          
-          {products.slice(1).map((item, idx) => (
-            <FadeIn key={item.id} delay={0.1 * ((idx % 4) + 1)}>
-              <ProductCard {...item} />
-            </FadeIn>
-          ))}
-        </div>
-
-        {/* Pagination */}
-        <div className="mt-16 flex justify-center">
-          <div className="flex items-center border border-gray-200">
-            <button className="px-4 py-2 bg-gray-100 text-gray-500 font-medium border-r border-gray-200">1</button>
-            <button className="px-4 py-2 bg-white text-gray-500 font-medium hover:bg-gray-50 border-r border-gray-200">2</button>
-            <button className="px-4 py-2 bg-white text-gray-500 hover:bg-gray-50">&rarr;</button>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {showPoster && (
+              <FadeIn>
+                <Link
+                  href="/shop?collection=sale"
+                  className="relative block aspect-[4/5] bg-[#F6F6F6] overflow-hidden h-full w-full group"
+                  aria-label="30% off — shop the sale"
+                >
+                  <span className="absolute top-0 right-0 bg-[#FBB03B] text-black text-[10px] font-bold px-2 py-1 z-10 uppercase">
+                    SALE!
+                  </span>
+                  <Image
+                    src="/products/4-2.jpg"
+                    alt="30% off — limited time offer"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </Link>
+              </FadeIn>
+            )}
+            {visible.map((product, idx) => (
+              <FadeIn key={product.id} delay={0.1 * (idx % 4)}>
+                <ProductCard product={product} />
+              </FadeIn>
+            ))}
           </div>
-        </div>
+        )}
 
+        {totalPages > 1 && (
+          <nav className="mt-16 flex justify-center" aria-label="Pagination">
+            <div className="flex items-center border border-gray-200">
+              {page > 1 && (
+                <Link href={hrefWith({ page: String(page - 1) })} className="px-4 py-2 text-gray-500 hover:bg-gray-50 border-r border-gray-200" aria-label="Previous page">
+                  &larr;
+                </Link>
+              )}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                <Link
+                  key={n}
+                  href={hrefWith({ page: n === 1 ? undefined : String(n) })}
+                  aria-current={n === page ? 'page' : undefined}
+                  className={`px-4 py-2 font-medium border-r border-gray-200 last:border-r-0 ${
+                    n === page ? 'bg-gray-100 text-gray-900' : 'bg-white text-gray-500 hover:bg-gray-50'
+                  }`}
+                >
+                  {n}
+                </Link>
+              ))}
+              {page < totalPages && (
+                <Link href={hrefWith({ page: String(page + 1) })} className="px-4 py-2 text-gray-500 hover:bg-gray-50" aria-label="Next page">
+                  &rarr;
+                </Link>
+              )}
+            </div>
+          </nav>
+        )}
       </div>
     </div>
   );
