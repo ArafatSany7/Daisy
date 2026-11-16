@@ -2,8 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Check, Plus } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
+import { useAddToCart } from '@/components/cart/useAddToCart';
+import { ease } from '@/lib/motion';
 import { discountPercent, getCategory, isOnSale, type Product } from '@/lib/products';
 import { formatPrice } from '@/lib/site';
 
@@ -17,7 +20,8 @@ export default function ProductCard({
   /** "feature" renders a taller tile for bento layouts. */
   variant?: 'default' | 'feature';
 }) {
-  const { isInCart, addToCart } = useCart();
+  const { isInCart } = useCart();
+  const addToCart = useAddToCart();
   const { id, slug, title, price, oldPrice, images, sizes } = product;
   const href = `/product/${slug}`;
   const inCart = isInCart(id);
@@ -76,9 +80,14 @@ export default function ProductCard({
         {/* Quick add: revealed on hover/focus for pointer devices */}
         <div className="absolute inset-x-3 bottom-3 z-[2] hidden [@media(hover:hover)]:block translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]">
           {inCart ? (
-            <div className="flex items-center justify-center gap-2 h-11 rounded-full bg-white/95 backdrop-blur text-sm font-semibold text-success shadow-lg">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.25, ease: ease.out }}
+              className="flex items-center justify-center gap-2 h-11 rounded-full bg-white/95 backdrop-blur text-sm font-semibold text-success shadow-lg"
+            >
               <Check size={16} /> In your bag
-            </div>
+            </motion.div>
           ) : needsSize ? (
             <div className="rounded-2xl bg-white/95 backdrop-blur p-2.5 shadow-lg">
               <p className="text-xs font-semibold text-muted text-center mb-2">Quick add</p>
@@ -124,9 +133,14 @@ export default function ProductCard({
         {/* Touch devices: always-visible action */}
         <div className="mt-3 [@media(hover:hover)]:hidden">
           {inCart ? (
-            <span className="flex items-center justify-center gap-1.5 h-11 rounded-full bg-well text-sm font-semibold text-success">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.25, ease: ease.out }}
+              className="flex items-center justify-center gap-1.5 h-11 rounded-full bg-well text-sm font-semibold text-success"
+            >
               <Check size={16} /> In your bag
-            </span>
+            </motion.span>
           ) : needsSize ? (
             <Link href={href} className="btn btn-outline w-full h-11 px-4">
               Choose size

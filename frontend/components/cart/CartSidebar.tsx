@@ -4,145 +4,173 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Minus, Plus, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Lock, Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
-import { formatPrice } from '@/lib/site';
+import { Sheet } from '@/components/ui/sheet';
+import { ease, spring } from '@/lib/motion';
+import { formatPrice, site } from '@/lib/site';
 
 export default function CartSidebar() {
-  const { cartItems, isCartOpen, closeCart, removeFromCart, updateQuantity, cartTotal } = useCart();
+  const { cartItems, isCartOpen, openCart, closeCart, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart();
   const pathname = usePathname();
+  const remaining = site.freeShippingThreshold - cartTotal;
+  const progress = Math.min(100, (cartTotal / site.freeShippingThreshold) * 100);
 
-  // Close the drawer whenever the route changes (e.g. after clicking a product or Checkout).
+  // Close the drawer after navigating (e.g. clicking a product or Checkout).
   useEffect(() => {
     closeCart();
   }, [pathname, closeCart]);
 
-  useEffect(() => {
-    if (!isCartOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && closeCart();
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [isCartOpen, closeCart]);
+  const footer =
+    cartItems.length > 0 ? (
+      <footer className="shrink-0 border-t border-line bg-white px-6 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+        <div className="flex justify-between items-baseline mb-1">
+          <span className="text-muted">Subtotal</span>
+          <span className="font-semibold text-xl tabular-nums">{formatPrice(cartTotal)}</span>
+        </div>
+        <p className="text-xs text-muted mb-5">Shipping and taxes calculated at checkout.</p>
+        <Link href="/checkout" onClick={closeCart} className="btn btn-primary w-full h-14 text-[15px]">
+          <Lock size={16} aria-hidden="true" /> Checkout securely
+        </Link>
+        <Link
+          href="/cart"
+          onClick={closeCart}
+          className="mt-3 flex justify-center text-sm font-semibold text-muted hover:text-ink transition-colors"
+        >
+          View full bag
+        </Link>
+      </footer>
+    ) : null;
 
   return (
-    <AnimatePresence>
-      {isCartOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeCart}
-            className="fixed inset-0 bg-ink/30 backdrop-blur-[2px] z-[60]"
-            aria-hidden="true"
-          />
-
-          <motion.aside
-            role="dialog"
-            aria-modal="true"
-            aria-label="Shopping cart"
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'tween', duration: 0.3 }}
-            className="fixed right-0 top-0 h-full w-full max-w-[420px] bg-surface shadow-2xl z-[60] flex flex-col"
-          >
-            <div className="px-6 h-[72px] border-b border-line flex justify-between items-center">
-              <h2 className="font-display text-2xl">Your bag</h2>
-              <button type="button" onClick={closeCart} className="w-11 h-11 -mr-2 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-well" aria-label="Close cart">
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {cartItems.length === 0 ? (
-                <div className="text-center mt-10">
-                  <p className="font-display text-2xl mb-2">Your bag is empty</p>
-                  <p className="text-muted text-sm mb-6">Find something you love — it will wait for you here.</p>
-                  <Link onClick={closeCart} href="/shop" className="btn btn-primary">
-                    Start shopping
-                  </Link>
-                </div>
+    <Sheet
+      open={isCartOpen}
+      onOpenChange={(open) => (open ? openCart() : closeCart())}
+      title={
+        <span className="flex items-baseline gap-2">
+          Your bag
+          {cartCount > 0 && <span className="font-sans text-sm text-muted tabular-nums">({cartCount})</span>}
+        </span>
+      }
+      description="Review the items in your shopping bag"
+      footer={footer}
+    >
+      {cartItems.length === 0 ? (
+        <div className="h-full flex flex-col items-center justify-center text-center px-8 py-16">
+          <span className="w-16 h-16 rounded-full bg-well flex items-center justify-center text-muted mb-5">
+            <ShoppingBag size={26} strokeWidth={1.6} aria-hidden="true" />
+          </span>
+          <p className="font-display text-2xl mb-2">Your bag is empty</p>
+          <p className="text-muted text-sm mb-7">Find something you love — it will wait for you here.</p>
+          <Link href="/shop" onClick={closeCart} className="btn btn-primary">
+            Start shopping
+          </Link>
+        </div>
+      ) : (
+        <div className="px-6 pb-6">
+          {/* Free-shipping progress */}
+          <div className="py-5">
+            <p className="text-sm mb-2.5" aria-live="polite">
+              {remaining > 0 ? (
+                <>
+                  Add <span className="font-semibold">{formatPrice(remaining)}</span> for free shipping
+                </>
               ) : (
-                cartItems.map((item) => (
-                  <div key={item.id} className="flex gap-4 border-b border-line pb-5 relative">
-                    <Link onClick={closeCart} href={`/product/${item.slug}`} className="relative w-20 h-24 bg-well rounded-xl overflow-hidden flex-shrink-0">
-                      <Image src={item.img} alt={item.name} fill sizes="80px" className="object-contain" />
-                    </Link>
-                    <div className="flex flex-col justify-center flex-1 pr-6">
-                      <Link onClick={closeCart} href={`/product/${item.slug}`} className="text-sm font-semibold leading-snug mb-1 hover:underline underline-offset-4">
-                        {item.name}
-                      </Link>
-                      {item.size && <p className="text-xs text-muted mb-1">Size: {item.size}</p>}
-                      <p className="text-sm font-semibold mb-2">{formatPrice(item.price)}</p>
-                      <div className="flex items-center rounded-full border border-line bg-white w-fit">
-                        <button
+                <span className="font-semibold text-success">You&apos;ve unlocked free shipping</span>
+              )}
+            </p>
+            <div
+              className="h-1.5 rounded-full bg-well overflow-hidden"
+              role="progressbar"
+              aria-label="Progress to free shipping"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress)}
+            >
+              <motion.div
+                className={`h-full rounded-full origin-left ${remaining > 0 ? 'bg-accent' : 'bg-success'}`}
+                initial={false}
+                animate={{ scaleX: progress / 100 }}
+                transition={spring.smooth}
+              />
+            </div>
+          </div>
+
+          <ul className="border-t border-line">
+            <AnimatePresence initial={false}>
+              {cartItems.map((item) => (
+                <motion.li
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, x: 24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 24, height: 0, paddingTop: 0, paddingBottom: 0, transition: { duration: 0.25, ease: ease.in } }}
+                  transition={{ duration: 0.3, ease: ease.out, layout: spring.smooth }}
+                  className="flex gap-4 py-5 border-b border-line overflow-hidden"
+                >
+                  <Link
+                    href={`/product/${item.slug}`}
+                    onClick={closeCart}
+                    className="relative w-20 h-24 shrink-0 rounded-xl bg-well overflow-hidden"
+                  >
+                    <Image src={item.img} alt={item.name} fill sizes="80px" className="object-contain p-1.5" />
+                  </Link>
+                  <div className="flex-1 min-w-0 flex flex-col">
+                    <div className="flex justify-between gap-3">
+                      <div className="min-w-0">
+                        <Link
+                          href={`/product/${item.slug}`}
+                          onClick={closeCart}
+                          className="block text-sm font-semibold leading-snug hover:underline underline-offset-4"
+                        >
+                          {item.name}
+                        </Link>
+                        {item.size && <p className="text-xs text-muted mt-0.5">Size {item.size}</p>}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFromCart(item.id)}
+                        className="w-8 h-8 -mt-1 -mr-1.5 shrink-0 rounded-full flex items-center justify-center text-muted hover:text-signal hover:bg-well transition-colors"
+                        aria-label={`Remove ${item.name}`}
+                      >
+                        <X size={15} />
+                      </button>
+                    </div>
+                    <div className="mt-auto pt-3 flex items-center justify-between">
+                      <div className="flex items-center rounded-full border border-line bg-white">
+                        <motion.button
                           type="button"
+                          whileTap={{ scale: 0.85 }}
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           disabled={item.quantity <= 1}
-                          className="w-8 h-8 flex items-center justify-center text-muted hover:text-ink disabled:opacity-30"
+                          className="w-9 h-9 flex items-center justify-center text-muted hover:text-ink disabled:opacity-30"
                           aria-label={`Decrease quantity of ${item.name}`}
                         >
-                          <Minus size={12} />
-                        </button>
-                        <span className="w-8 text-center text-xs tabular-nums">{item.quantity}</span>
-                        <button
+                          <Minus size={13} />
+                        </motion.button>
+                        <span className="w-6 text-center text-sm font-semibold tabular-nums" aria-label={`Quantity ${item.quantity}`}>
+                          {item.quantity}
+                        </span>
+                        <motion.button
                           type="button"
+                          whileTap={{ scale: 0.85 }}
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-8 h-8 flex items-center justify-center text-muted hover:text-ink"
+                          className="w-9 h-9 flex items-center justify-center text-muted hover:text-ink"
                           aria-label={`Increase quantity of ${item.name}`}
                         >
-                          <Plus size={12} />
-                        </button>
+                          <Plus size={13} />
+                        </motion.button>
                       </div>
+                      <span className="text-sm font-semibold tabular-nums">{formatPrice(item.price * item.quantity)}</span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeFromCart(item.id)}
-                      className="absolute right-0 top-0 w-9 h-9 rounded-full flex items-center justify-center text-muted hover:text-signal hover:bg-well"
-                      aria-label={`Remove ${item.name}`}
-                    >
-                      <X size={16} />
-                    </button>
                   </div>
-                ))
-              )}
-            </div>
-
-            {cartItems.length > 0 && (
-              <div className="p-6 border-t border-line bg-white">
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-muted">Subtotal</span>
-                  <span className="font-semibold text-xl tabular-nums">{formatPrice(cartTotal)}</span>
-                </div>
-                <p className="text-xs text-muted -mt-4 mb-5">Shipping calculated at checkout.</p>
-                <div className="flex flex-col gap-3">
-                  <Link
-                    onClick={closeCart}
-                    href="/cart"
-                    className="btn btn-outline w-full"
-                  >
-                    View cart
-                  </Link>
-                  <Link
-                    onClick={closeCart}
-                    href="/checkout"
-                    className="btn btn-primary w-full h-14 text-[15px]"
-                  >
-                    Checkout
-                  </Link>
-                </div>
-              </div>
-            )}
-          </motion.aside>
-        </>
+                </motion.li>
+              ))}
+            </AnimatePresence>
+          </ul>
+        </div>
       )}
-    </AnimatePresence>
+    </Sheet>
   );
 }

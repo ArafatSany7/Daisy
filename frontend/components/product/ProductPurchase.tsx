@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Minus, Plus, RotateCcw, ShieldCheck, ShoppingBag, Truck } from 'lucide-react';
-import { useCart } from '@/app/context/CartContext';
+import { motion, useAnimationControls } from 'framer-motion';
+import { Minus, Plus, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
+import AddToCartButton from '@/components/cart/AddToCartButton';
+import { useAddToCart } from '@/components/cart/useAddToCart';
 import type { Product } from '@/lib/products';
 import { formatPrice, site } from '@/lib/site';
 
 export default function ProductPurchase({ product }: { product: Product }) {
-  const { addToCart } = useCart();
+  const addToCart = useAddToCart();
+  const sizeRow = useAnimationControls();
   const [size, setSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [showSizeError, setShowSizeError] = useState(false);
@@ -18,7 +21,8 @@ export default function ProductPurchase({ product }: { product: Product }) {
   const handleAdd = () => {
     if (needsSize && !size) {
       setShowSizeError(true);
-      return;
+      sizeRow.start({ x: [0, -6, 6, -4, 4, 0], transition: { duration: 0.4 } });
+      return false;
     }
     addToCart({
       productId: product.id,
@@ -30,6 +34,7 @@ export default function ProductPurchase({ product }: { product: Product }) {
       size: size ?? undefined,
       quantity,
     });
+    return true;
   };
 
   return (
@@ -44,7 +49,7 @@ export default function ProductPurchase({ product }: { product: Product }) {
               Size guide
             </Link>
           </div>
-          <div className="flex flex-wrap gap-2" aria-describedby={showSizeError ? 'size-error' : undefined}>
+          <motion.div animate={sizeRow} className="flex flex-wrap gap-2" aria-describedby={showSizeError ? 'size-error' : undefined}>
             {product.sizes!.map((s) => (
               <button
                 key={s}
@@ -65,7 +70,7 @@ export default function ProductPurchase({ product }: { product: Product }) {
                 {s}
               </button>
             ))}
-          </div>
+          </motion.div>
           {showSizeError && (
             <p id="size-error" role="alert" className="text-sm text-signal mt-3">
               Choose a size to add this to your bag.
@@ -97,9 +102,7 @@ export default function ProductPurchase({ product }: { product: Product }) {
             <Plus size={16} />
           </button>
         </div>
-        <button type="button" onClick={handleAdd} className="btn btn-primary flex-1 h-14 text-[15px]">
-          <ShoppingBag size={18} /> Add to cart
-        </button>
+        <AddToCartButton onAdd={handleAdd} className="flex-1 h-14 text-[15px]" successLabel="Added to bag" />
       </div>
 
       <ul className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-muted">

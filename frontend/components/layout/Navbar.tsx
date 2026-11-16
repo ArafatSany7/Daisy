@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ShoppingBag, User, Menu, X, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
 import { useCart } from '@/app/context/CartContext';
 import CartSidebar from '@/components/cart/CartSidebar';
 import SearchForm from '@/components/layout/SearchForm';
@@ -21,6 +21,14 @@ export default function Navbar() {
   const [isShopMenuOpen, setIsShopMenuOpen] = useState(false);
   const { cartCount, toggleCart } = useCart();
   const pathname = usePathname();
+  const badgeControls = useAnimationControls();
+
+  // Replay a small spring "bump" on the badge whenever the cart count changes.
+  useEffect(() => {
+    if (cartCount > 0) {
+      badgeControls.start({ scale: [1.4, 1], opacity: 1, transition: { type: 'spring', stiffness: 500, damping: 15 } });
+    }
+  }, [cartCount, badgeControls]);
 
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
@@ -46,10 +54,21 @@ export default function Navbar() {
         : 'text-muted'
     }`;
 
-  const cartBadge = cartCount > 0 && (
-    <span className="absolute top-1 right-0.5 bg-accent text-white text-[11px] font-semibold min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full ring-2 ring-surface tabular-nums">
-      {cartCount}
-    </span>
+  const cartBadge = (
+    <AnimatePresence>
+      {cartCount > 0 && (
+        <motion.span
+          key="badge"
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={badgeControls}
+          exit={{ scale: 0.6, opacity: 0, transition: { duration: 0.15 } }}
+          aria-hidden="true"
+          className="absolute top-1 right-0.5 bg-accent text-white text-[11px] font-semibold min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full ring-2 ring-surface tabular-nums"
+        >
+          {cartCount}
+        </motion.span>
+      )}
+    </AnimatePresence>
   );
 
   return (

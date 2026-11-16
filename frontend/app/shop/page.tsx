@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import ProductCard from '@/components/product/ProductCard';
-import FadeIn from '@/components/animations/FadeIn';
+import ProductGrid from '@/components/shop/ProductGrid';
 import SortSelect from '@/components/shop/SortSelect';
 import {
   COLLECTIONS,
@@ -104,14 +103,14 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
       <div className="sticky top-[72px] z-30 bg-surface/90 backdrop-blur-xl border-y border-line">
         <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
           <nav className="no-scrollbar flex-1 flex items-center gap-2 overflow-x-auto -mx-1 px-1" aria-label="Filter products">
-            <Link href={hrefWith({ category: undefined, collection: undefined })} className={chip(!category && !collection)} aria-current={!category && !collection ? 'page' : undefined}>
+            <Link href={hrefWith({ category: undefined, collection: undefined })} scroll={false} className={chip(!category && !collection)} aria-current={!category && !collection ? 'page' : undefined}>
               All
             </Link>
             {Object.entries(COLLECTIONS).map(([key, label]) => (
               <Link
                 key={key}
                 href={hrefWith({ collection: collection === key ? undefined : key })}
-                className={chip(collection === key)}
+                scroll={false} className={chip(collection === key)}
                 aria-current={collection === key ? 'page' : undefined}
               >
                 {label}
@@ -122,7 +121,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
               <Link
                 key={c.slug}
                 href={hrefWith({ category: category?.slug === c.slug ? undefined : c.slug })}
-                className={chip(category?.slug === c.slug)}
+                scroll={false} className={chip(category?.slug === c.slug)}
                 aria-current={category?.slug === c.slug ? 'page' : undefined}
               >
                 {c.name}
@@ -145,7 +144,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
 
         {q && (
           <div className="mb-8">
-            <Link href={hrefWith({ q: undefined })} className={chip(true)} aria-label={`Clear search for ${q}`}>
+            <Link href={hrefWith({ q: undefined })} scroll={false} className={chip(true)} aria-label={`Clear search for ${q}`}>
               Search: {q} <X size={14} className="ml-1.5" />
             </Link>
           </div>
@@ -160,13 +159,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-6">
-            {visible.map((product, idx) => (
-              <FadeIn key={product.id} delay={0.04 * (idx % 4)}>
-                <ProductCard product={product} priority={idx < 4} />
-              </FadeIn>
-            ))}
-          </div>
+          <ProductGrid products={visible} />
         )}
 
         {totalPages > 1 && (

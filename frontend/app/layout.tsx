@@ -3,8 +3,7 @@ import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { CartProvider } from '@/app/context/CartContext';
-import AOSInit from '@/components/animations/AOSInit';
+import AppProviders from '@/components/providers/AppProviders';
 import { site } from '@/lib/site';
 
 const inter = Inter({
@@ -48,14 +47,13 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <AOSInit />
-        <CartProvider>
+        <AppProviders>
           <Navbar />
           <main id="main" className="flex-grow">
             {children}
           </main>
           <Footer />
-        </CartProvider>
+        </AppProviders>
       </body>
     </html>
   );
