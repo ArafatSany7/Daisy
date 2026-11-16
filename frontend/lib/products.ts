@@ -170,6 +170,9 @@ export const getCategory = (slug: string | undefined) => categories.find((c) => 
 
 export const isOnSale = (p: Product) => p.oldPrice !== undefined && p.oldPrice > p.price;
 
+export const discountPercent = (p: Product) =>
+  p.oldPrice ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
+
 export const newArrivals = () => products.filter((p) => p.isNew);
 
 export const saleProducts = () => products.filter(isOnSale);

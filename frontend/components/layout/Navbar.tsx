@@ -12,6 +12,9 @@ import SearchForm from '@/components/layout/SearchForm';
 import { categories, COLLECTIONS } from '@/lib/products';
 import { formatPrice, mainNav, site } from '@/lib/site';
 
+const iconButton =
+  'relative inline-flex items-center justify-center w-11 h-11 rounded-full text-ink hover:bg-well transition-colors';
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,7 +25,7 @@ export default function Navbar() {
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    const handleScroll = () => setIsScrolled(window.scrollY > 8);
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -37,29 +40,40 @@ export default function Navbar() {
   }
 
   const linkClass = (href: string) =>
-    `transition-colors hover:text-primary ${isActive(href) ? 'text-primary' : ''}`;
+    `relative py-2 text-[15px] transition-colors hover:text-ink ${
+      isActive(href)
+        ? 'text-ink font-semibold after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ink'
+        : 'text-muted'
+    }`;
 
   const cartBadge = cartCount > 0 && (
-    <span className="absolute -top-1.5 -right-2 bg-sale text-black text-[10px] font-bold min-w-4 h-4 px-1 flex items-center justify-center rounded-full shadow-sm">
+    <span className="absolute top-1 right-0.5 bg-accent text-white text-[11px] font-semibold min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full ring-2 ring-surface tabular-nums">
       {cartCount}
     </span>
   );
 
   return (
     <>
-      <div className="bg-primary text-white text-xs font-medium py-2 text-center">
-        Free shipping on all orders over {formatPrice(site.freeShippingThreshold)}
+      <div className="bg-ink text-white/90 text-xs tracking-wide py-2.5 text-center px-4">
+        Free shipping on orders over {formatPrice(site.freeShippingThreshold)} ·{' '}
+        <Link href="/returns" className="underline underline-offset-2 hover:text-white">
+          {site.returnWindowDays}-day returns
+        </Link>
       </div>
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-4' : 'bg-white/90 backdrop-blur py-5'}`}
+        className={`sticky top-0 z-50 transition-[background-color,box-shadow,border-color] duration-300 border-b ${
+          isScrolled
+            ? 'bg-surface/85 backdrop-blur-xl border-line shadow-[0_1px_20px_-12px_rgb(0_0_0/0.25)]'
+            : 'bg-surface border-transparent'
+        }`}
       >
-        <div className="container mx-auto px-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-3" aria-label="Daisy home">
-            <Image src="/logo.png" alt="" width={40} height={40} className="object-contain" />
-            <span className="logo-text text-4xl text-primary">Daisy</span>
+        <div className="container mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-6">
+          <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Daisy home">
+            <Image src="/logo.png" alt="" width={34} height={34} className="object-contain" priority />
+            <span className="logo-text text-[34px] leading-none text-ink">Daisy</span>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-8 text-[15px] font-medium text-foreground" aria-label="Main">
+          <nav className="hidden md:flex items-center gap-8" aria-label="Main">
             {mainNav.map((item) =>
               item.href === '/shop' ? (
                 <div
@@ -68,7 +82,7 @@ export default function Navbar() {
                   onMouseEnter={() => setIsShopMenuOpen(true)}
                   onMouseLeave={() => setIsShopMenuOpen(false)}
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-0.5">
                     <Link href="/shop" className={linkClass('/shop')} aria-current={isActive('/shop') ? 'page' : undefined}>
                       Shop
                     </Link>
@@ -77,36 +91,52 @@ export default function Navbar() {
                       onClick={() => setIsShopMenuOpen((o) => !o)}
                       aria-expanded={isShopMenuOpen}
                       aria-label="Show shop categories"
-                      className="ml-1 hover:text-primary"
+                      className="p-1.5 text-muted hover:text-ink"
                     >
-                      <ChevronDown size={14} className={`transition-transform ${isShopMenuOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-200 ${isShopMenuOpen ? 'rotate-180' : ''}`}
+                      />
                     </button>
                   </div>
                   <AnimatePresence>
                     {isShopMenuOpen && (
                       <motion.div
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 6 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute left-1/2 -translate-x-1/2 top-full pt-4 z-50"
+                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.98, transition: { duration: 0.12 } }}
+                        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                        style={{ transformOrigin: 'top center' }}
+                        className="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-50"
                       >
-                        <div className="bg-white shadow-xl border border-gray-100 p-6 grid grid-cols-2 gap-x-10 gap-y-3 w-[360px] text-sm">
-                          <p className="col-span-2 text-[11px] font-bold uppercase tracking-wider text-gray-400">Categories</p>
-                          {categories.map((c) => (
-                            <Link key={c.slug} href={`/shop?category=${c.slug}`} className="hover:text-primary transition-colors">
-                              {c.name}
-                            </Link>
-                          ))}
-                          <p className="col-span-2 mt-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">Collections</p>
-                          {Object.entries(COLLECTIONS).map(([key, label]) => (
-                            <Link key={key} href={`/shop?collection=${key}`} className="hover:text-primary transition-colors">
-                              {label}
-                            </Link>
-                          ))}
-                          <Link href="/shop" className="col-span-2 mt-3 font-bold text-primary hover:underline">
-                            Shop all &rarr;
-                          </Link>
+                        <div className="bg-white rounded-2xl shadow-[0_24px_60px_-20px_rgb(0_0_0/0.25)] ring-1 ring-line p-6 grid grid-cols-[1fr_1fr_auto] gap-x-8 w-[480px]">
+                          <div className="col-span-2">
+                            <p className="eyebrow mb-3">Categories</p>
+                            <div className="grid grid-cols-2 gap-x-8 gap-y-1">
+                              {categories.map((c) => (
+                                <Link
+                                  key={c.slug}
+                                  href={`/shop?category=${c.slug}`}
+                                  className="py-1.5 text-sm text-ink/80 hover:text-ink hover:translate-x-0.5 transition-all"
+                                >
+                                  {c.name}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="border-l border-line pl-8">
+                            <p className="eyebrow mb-3">Edit</p>
+                            <div className="flex flex-col gap-1">
+                              {Object.entries(COLLECTIONS).map(([key, label]) => (
+                                <Link key={key} href={`/shop?collection=${key}`} className="py-1.5 text-sm text-ink/80 hover:text-ink whitespace-nowrap">
+                                  {label}
+                                </Link>
+                              ))}
+                              <Link href="/shop" className="py-1.5 text-sm font-semibold text-accent hover:underline whitespace-nowrap">
+                                Shop all &rarr;
+                              </Link>
+                            </div>
+                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -125,40 +155,23 @@ export default function Navbar() {
             )}
           </nav>
 
-          <div className="hidden md:flex items-center space-x-6">
-            <SearchForm className="hidden lg:block w-64" />
-            <Link href="/login" className="hover:text-primary transition-colors text-foreground" aria-label="Account">
-              <User size={22} strokeWidth={1.5} />
+          <div className="flex items-center gap-1">
+            <SearchForm className="hidden lg:block w-60 mr-2" />
+            <Link href="/login" className={`${iconButton} hidden md:inline-flex`} aria-label="Account">
+              <User size={21} strokeWidth={1.6} />
             </Link>
-            <button
-              type="button"
-              onClick={toggleCart}
-              className="hover:text-primary transition-colors relative text-foreground"
-              aria-label={`Open cart (${cartCount} items)`}
-            >
-              <ShoppingBag size={22} strokeWidth={1.5} />
-              {cartBadge}
-            </button>
-          </div>
-
-          <div className="md:hidden flex items-center space-x-4">
-            <button
-              type="button"
-              onClick={toggleCart}
-              className="relative p-1 text-foreground"
-              aria-label={`Open cart (${cartCount} items)`}
-            >
-              <ShoppingBag size={22} strokeWidth={1.5} />
+            <button type="button" onClick={toggleCart} className={iconButton} aria-label={`Open cart, ${cartCount} items`}>
+              <ShoppingBag size={21} strokeWidth={1.6} />
               {cartBadge}
             </button>
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen((o) => !o)}
-              className="p-2 -mr-2 text-foreground"
+              className={`${iconButton} md:hidden`}
               aria-expanded={isMobileMenuOpen}
               aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -169,31 +182,35 @@ export default function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white border-t border-gray-100 overflow-hidden"
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="md:hidden bg-surface border-t border-line overflow-hidden"
             >
-              <nav className="flex flex-col px-6 py-4 space-y-4 text-sm font-medium text-foreground" aria-label="Mobile">
-                <SearchForm />
+              <nav className="flex flex-col px-4 py-5 gap-1" aria-label="Mobile">
+                <SearchForm className="mb-3" />
                 {mainNav.map((item) => (
-                  <Link key={item.href} href={item.href} className={linkClass(item.href)}>
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`py-3 text-lg font-display ${isActive(item.href) ? 'text-ink' : 'text-ink/70'}`}
+                  >
                     {item.label}
                   </Link>
                 ))}
-                <div className="flex flex-wrap gap-2 pt-1">
+                <p className="eyebrow mt-4 mb-2">Categories</p>
+                <div className="flex flex-wrap gap-2">
                   {categories.map((c) => (
                     <Link
                       key={c.slug}
                       href={`/shop?category=${c.slug}`}
-                      className="px-3 py-1.5 bg-gray-100 text-xs hover:bg-primary hover:text-white transition-colors"
+                      className="px-4 py-2 rounded-full bg-well text-sm hover:bg-ink hover:text-white transition-colors"
                     >
                       {c.name}
                     </Link>
                   ))}
                 </div>
-                <div className="border-t border-gray-100 pt-4">
-                  <Link href="/login" className="flex items-center gap-2">
-                    <User size={18} /> Account
-                  </Link>
-                </div>
+                <Link href="/login" className="mt-5 pt-5 border-t border-line flex items-center gap-2 text-sm">
+                  <User size={18} /> Account
+                </Link>
               </nav>
             </motion.div>
           )}

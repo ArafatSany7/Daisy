@@ -1,11 +1,19 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Star, Truck, RotateCcw, ShieldCheck } from 'lucide-react';
+import { Star } from 'lucide-react';
 import ProductCard from '@/components/product/ProductCard';
 import ProductGallery from '@/components/product/ProductGallery';
 import ProductPurchase from '@/components/product/ProductPurchase';
-import { getCategory, getProductBySlug, isOnSale, products, relatedProducts } from '@/lib/products';
+import SectionHeader from '@/components/home/SectionHeader';
+import {
+  discountPercent,
+  getCategory,
+  getProductBySlug,
+  isOnSale,
+  products,
+  relatedProducts,
+} from '@/lib/products';
 import { formatPrice, site } from '@/lib/site';
 
 type Params = Promise<{ slug: string }>;
@@ -32,105 +40,108 @@ export default async function ProductPage({ params }: { params: Params }) {
 
   const category = getCategory(product.category)!;
   const related = relatedProducts(product);
-  const savings = product.oldPrice ? product.oldPrice - product.price : 0;
+  const onSale = isOnSale(product);
 
   return (
-    <div className="bg-white pb-24">
-      <div className="border-b border-gray-100 py-4">
-        <nav className="container mx-auto px-6 text-sm text-gray-500" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-          <span className="mx-2">&gt;</span>
-          <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
-          <span className="mx-2">&gt;</span>
-          <Link href={`/shop?category=${category.slug}`} className="hover:text-primary transition-colors">{category.name}</Link>
-          <span className="mx-2">&gt;</span>
-          <span className="text-gray-900">{product.title}</span>
+    <div className="bg-surface pb-24">
+      <div className="container mx-auto px-4 sm:px-6 pt-8">
+        <nav className="text-sm text-muted mb-8" aria-label="Breadcrumb">
+          <ol className="flex flex-wrap items-center gap-1.5">
+            <li><Link href="/" className="hover:text-ink">Home</Link></li>
+            <li aria-hidden="true">/</li>
+            <li><Link href="/shop" className="hover:text-ink">Shop</Link></li>
+            <li aria-hidden="true">/</li>
+            <li><Link href={`/shop?category=${category.slug}`} className="hover:text-ink">{category.name}</Link></li>
+            <li aria-hidden="true">/</li>
+            <li className="text-ink truncate max-w-[50vw]" aria-current="page">{product.title}</li>
+          </ol>
         </nav>
-      </div>
 
-      <div className="container mx-auto px-6 mt-10 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
-        <ProductGallery images={product.images} title={product.title} />
-
-        <div>
-          <Link
-            href={`/shop?category=${category.slug}`}
-            className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
-          >
-            {category.name}
-          </Link>
-          <h1 className="text-3xl lg:text-4xl font-bold mt-2 mb-4">{product.title}</h1>
-
-          <div className="flex items-center gap-2 mb-6 text-sm">
-            <div className="flex text-[#FBB03B]" aria-label={`Rated ${product.rating} out of 5`}>
-              {Array.from({ length: 5 }, (_, i) => (
-                <Star key={i} size={16} fill={i < Math.round(product.rating) ? 'currentColor' : 'none'} />
-              ))}
-            </div>
-            <span className="text-gray-500">
-              {product.rating.toFixed(1)} ({product.reviewCount} reviews)
-            </span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+          <div className="lg:col-span-7">
+            <ProductGallery images={product.images} title={product.title} />
           </div>
 
-          <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-3xl font-bold text-[#28A745]">{formatPrice(product.price)}</span>
-            {isOnSale(product) && (
-              <>
-                <span className="text-lg text-gray-400 line-through">{formatPrice(product.oldPrice!)}</span>
-                <span className="bg-[#FBB03B] text-black text-[11px] font-bold px-2 py-1 uppercase">
-                  Save {formatPrice(savings)}
+          <div className="lg:col-span-5">
+            <div className="lg:sticky lg:top-28">
+              <Link href={`/shop?category=${category.slug}`} className="eyebrow hover:text-ink">
+                {category.name}
+              </Link>
+              <h1 className="font-display text-4xl md:text-5xl mt-3 mb-4">{product.title}</h1>
+
+              <a href="#details" className="inline-flex items-center gap-2 mb-6 text-sm group">
+                <span className="flex text-[#B7791F]" aria-hidden="true">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <Star key={i} size={15} fill={i < Math.round(product.rating) ? 'currentColor' : 'none'} />
+                  ))}
                 </span>
-              </>
-            )}
-          </div>
+                <span className="text-muted group-hover:text-ink">
+                  <span className="sr-only">Rated </span>
+                  {product.rating.toFixed(1)} · {product.reviewCount} reviews
+                </span>
+              </a>
 
-          <p className="text-gray-600 mb-8 leading-relaxed">{product.description}</p>
+              <div className="flex flex-wrap items-baseline gap-3 mb-6">
+                <span className={`text-3xl font-semibold ${onSale ? 'text-signal' : 'text-ink'}`}>
+                  {formatPrice(product.price)}
+                </span>
+                {onSale && (
+                  <>
+                    <span className="text-lg text-muted line-through">
+                      <span className="sr-only">was </span>
+                      {formatPrice(product.oldPrice!)}
+                    </span>
+                    <span className="bg-signal/10 text-signal text-xs font-semibold px-2.5 py-1 rounded-full">
+                      Save {discountPercent(product)}%
+                    </span>
+                  </>
+                )}
+              </div>
 
-          <ProductPurchase product={product} />
+              <p className="text-muted mb-8">{product.description}</p>
 
-          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-y border-gray-100 py-6 mb-8 text-xs text-gray-600">
-            <li className="flex items-center gap-2">
-              <Truck size={18} className="text-primary shrink-0" /> Free shipping over {formatPrice(site.freeShippingThreshold)}
-            </li>
-            <li className="flex items-center gap-2">
-              <RotateCcw size={18} className="text-primary shrink-0" /> {site.returnWindowDays}-day returns
-            </li>
-            <li className="flex items-center gap-2">
-              <ShieldCheck size={18} className="text-primary shrink-0" /> Secure checkout
-            </li>
-          </ul>
+              <ProductPurchase product={product} />
 
-          <div className="space-y-4">
-            <details className="group border-b border-gray-100 pb-4" open>
-              <summary className="font-bold flex justify-between items-center cursor-pointer list-none">
-                Description
-                <span className="group-open:rotate-180 transition-transform text-xs">▼</span>
-              </summary>
-              <p className="mt-4 text-sm text-gray-600 leading-relaxed">{product.description}</p>
-            </details>
-            <details className="group border-b border-gray-100 pb-4">
-              <summary className="font-bold flex justify-between items-center cursor-pointer list-none">
-                Shipping &amp; Returns
-                <span className="group-open:rotate-180 transition-transform text-xs">▼</span>
-              </summary>
-              <p className="mt-4 text-sm text-gray-600 leading-relaxed">
-                Free shipping on orders over {formatPrice(site.freeShippingThreshold)}. Returns accepted within{' '}
-                {site.returnWindowDays} days. See our <Link href="/shipping" className="underline hover:text-primary">shipping</Link> and{' '}
-                <Link href="/returns" className="underline hover:text-primary">returns</Link> policies.
-              </p>
-            </details>
+              <div id="details" className="mt-10 border-t border-line divide-y divide-line">
+                {[
+                  { title: 'Details & care', body: `${product.description} Care: gentle wash or dry clean; see the label for specifics.`, open: true },
+                  {
+                    title: 'Shipping & returns',
+                    body: `Free shipping on orders over ${formatPrice(site.freeShippingThreshold)}. Returns accepted within ${site.returnWindowDays} days.`,
+                  },
+                ].map((d) => (
+                  <details key={d.title} className="group" open={d.open}>
+                    <summary className="flex items-center justify-between py-4 cursor-pointer list-none font-semibold text-[15px] [&::-webkit-details-marker]:hidden">
+                      {d.title}
+                      <span aria-hidden="true" className="text-xl leading-none text-muted transition-transform duration-300 group-open:rotate-45">+</span>
+                    </summary>
+                    <p className="pb-5 text-sm text-muted">
+                      {d.body}{' '}
+                      {d.title.startsWith('Shipping') && (
+                        <>
+                          Read our <Link href="/shipping" className="link-underline text-ink">shipping</Link> and{' '}
+                          <Link href="/returns" className="link-underline text-ink">returns</Link> policies.
+                        </>
+                      )}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {related.length > 0 && (
-        <section className="container mx-auto px-6 mt-24" aria-labelledby="related-heading">
-          <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
-            <h2 id="related-heading" className="font-bold text-2xl tracking-tight">You may also like</h2>
-            <Link href={`/shop?category=${category.slug}`} className="text-sm font-bold text-primary hover:underline">
-              More {category.name.toLowerCase()} &rarr;
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section className="container mx-auto px-4 sm:px-6 mt-28" aria-labelledby="related-heading">
+          <SectionHeader
+            eyebrow="Complete the look"
+            title="You may also like"
+            id="related-heading"
+            href={`/shop?category=${category.slug}`}
+            linkLabel={`More ${category.name.toLowerCase()}`}
+          />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

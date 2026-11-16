@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, RotateCcw, ShieldCheck, ShoppingBag, Truck } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
 import type { Product } from '@/lib/products';
+import { formatPrice, site } from '@/lib/site';
 
 export default function ProductPurchase({ product }: { product: Product }) {
   const { addToCart } = useCart();
@@ -12,7 +13,7 @@ export default function ProductPurchase({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [showSizeError, setShowSizeError] = useState(false);
   const needsSize = !!product.sizes?.length;
-  const lowStock = product.stock > 0 && product.stock <= 8;
+  // Low-stock messaging is intentionally hidden until real inventory data exists.
 
   const handleAdd = () => {
     if (needsSize && !size) {
@@ -32,18 +33,18 @@ export default function ProductPurchase({ product }: { product: Product }) {
   };
 
   return (
-    <div className="mb-8">
+    <div>
       {needsSize && (
         <fieldset className="mb-6">
           <div className="flex justify-between items-center mb-3">
-            <legend className="font-bold text-sm">
-              Size{size && <span className="font-normal text-gray-500">: {size}</span>}
+            <legend className="text-sm font-semibold">
+              Size{size ? <span className="font-normal text-muted"> · {size}</span> : null}
             </legend>
-            <Link href="/help#sizing" className="text-xs underline text-gray-500 hover:text-primary">
+            <Link href="/help#sizing" className="text-sm text-muted link-underline">
               Size guide
             </Link>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2" aria-describedby={showSizeError ? 'size-error' : undefined}>
             {product.sizes!.map((s) => (
               <button
                 key={s}
@@ -53,8 +54,12 @@ export default function ProductPurchase({ product }: { product: Product }) {
                   setSize(s);
                   setShowSizeError(false);
                 }}
-                className={`min-w-12 h-12 px-3 border text-sm font-medium transition-colors ${
-                  size === s ? 'bg-[#2A2A2A] text-white border-[#2A2A2A]' : 'border-gray-200 hover:border-[#2A2A2A]'
+                className={`min-w-14 h-12 px-4 rounded-full border text-sm font-semibold transition-all active:scale-95 ${
+                  size === s
+                    ? 'bg-ink text-white border-ink'
+                    : showSizeError
+                      ? 'border-signal/60 hover:border-ink'
+                      : 'border-line bg-white hover:border-ink'
                 }`}
               >
                 {s}
@@ -62,44 +67,52 @@ export default function ProductPurchase({ product }: { product: Product }) {
             ))}
           </div>
           {showSizeError && (
-            <p role="alert" className="text-sm text-red-600 mt-3">
-              Please choose a size.
+            <p id="size-error" role="alert" className="text-sm text-signal mt-3">
+              Choose a size to add this to your bag.
             </p>
           )}
         </fieldset>
       )}
 
-      {lowStock && <p className="text-sm text-[#C77700] font-medium mb-4">Only {product.stock} left in stock</p>}
-
       <div className="flex gap-3">
-        <div className="flex items-center border border-gray-200">
+        <div className="flex items-center h-14 rounded-full border border-line bg-white">
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
             disabled={quantity <= 1}
-            className="px-4 h-14 text-gray-500 hover:text-black disabled:opacity-30"
+            className="w-12 h-full flex items-center justify-center text-muted hover:text-ink disabled:opacity-30"
             aria-label="Decrease quantity"
           >
-            <Minus size={14} />
+            <Minus size={16} />
           </button>
-          <span className="w-8 text-center tabular-nums" aria-live="polite">{quantity}</span>
+          <span className="w-6 text-center font-semibold tabular-nums" aria-live="polite" aria-label={`Quantity ${quantity}`}>
+            {quantity}
+          </span>
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.min(product.stock || 99, q + 1))}
-            className="px-4 h-14 text-gray-500 hover:text-black"
+            className="w-12 h-full flex items-center justify-center text-muted hover:text-ink"
             aria-label="Increase quantity"
           >
-            <Plus size={14} />
+            <Plus size={16} />
           </button>
         </div>
-        <button
-          type="button"
-          onClick={handleAdd}
-          className="flex-1 bg-[#2A2A2A] text-white h-14 font-bold text-sm uppercase tracking-wider hover:bg-primary transition-colors"
-        >
-          Add to cart
+        <button type="button" onClick={handleAdd} className="btn btn-primary flex-1 h-14 text-[15px]">
+          <ShoppingBag size={18} /> Add to cart
         </button>
       </div>
+
+      <ul className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-muted">
+        <li className="flex items-center gap-2 rounded-xl bg-well px-3 py-3">
+          <Truck size={16} className="text-accent shrink-0" aria-hidden="true" /> Free over {formatPrice(site.freeShippingThreshold)}
+        </li>
+        <li className="flex items-center gap-2 rounded-xl bg-well px-3 py-3">
+          <RotateCcw size={16} className="text-accent shrink-0" aria-hidden="true" /> {site.returnWindowDays}-day returns
+        </li>
+        <li className="flex items-center gap-2 rounded-xl bg-well px-3 py-3">
+          <ShieldCheck size={16} className="text-accent shrink-0" aria-hidden="true" /> Secure checkout
+        </li>
+      </ul>
     </div>
   );
 }

@@ -16,14 +16,14 @@ export default function SearchForm({ className = '' }: { className?: string }) {
 
   return (
     <form role="search" onSubmit={onSubmit} className={`relative ${className}`}>
-      <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+      <Search size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
       <input
         type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search products"
         aria-label="Search products"
-        className="pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-sm text-sm focus:outline-none focus:border-primary w-full"
+        className="w-full h-11 pl-11 pr-4 rounded-full bg-well border border-transparent text-sm text-ink placeholder:text-muted focus:outline-none focus:bg-white focus:border-line focus:ring-4 focus:ring-accent/10 transition-all"
       />
     </form>
   );

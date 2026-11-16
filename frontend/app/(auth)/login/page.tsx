@@ -22,16 +22,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background py-24 px-6">
-      <div className="w-full max-w-md bg-secondary/30 p-8 rounded-lg border border-secondary">
-        <h1 className="text-3xl font-bold text-center mb-8">Welcome Back</h1>
+    <div className="min-h-screen flex items-center justify-center bg-white py-24 px-6">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl border border-line">
+        <h1 className="font-display text-4xl text-center mb-8">Welcome Back</h1>
         
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="block font-medium mb-2">Email Address</label>
             <input 
               type="email" 
-              className="w-full px-4 py-3 bg-background border border-secondary rounded focus:outline-none focus:border-accent"
+              className="w-full px-4 py-3 bg-white border border-line rounded focus:outline-none focus:border-accent"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -42,7 +42,7 @@ export default function Login() {
             <label className="block font-medium mb-2">Password</label>
             <input 
               type="password" 
-              className="w-full px-4 py-3 bg-background border border-secondary rounded focus:outline-none focus:border-accent"
+              className="w-full px-4 py-3 bg-white border border-line rounded focus:outline-none focus:border-accent"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -57,19 +57,19 @@ export default function Login() {
             <Link href="/contact" className="text-accent hover:underline">Forgot Password?</Link>
           </div>
 
-          <button type="submit" className="w-full bg-primary text-background py-3 rounded-full font-bold hover:bg-accent hover:text-primary transition-all">
+          <button type="submit" className="btn btn-primary w-full">
             Sign In
           </button>
         </form>
 
         <div className="mt-6 text-center">
-           <button type="button" onClick={handleDemoLogin} className="text-sm text-foreground/60 hover:text-primary transition-colors underline">
+           <button type="button" onClick={handleDemoLogin} className="text-sm text-muted hover:text-accent transition-colors underline">
              Use Demo Credentials
            </button>
         </div>
 
 
-        <p className="mt-8 text-center text-foreground/70">
+        <p className="mt-8 text-center text-muted">
           Don&apos;t have an account? <Link href="/register" className="text-accent font-medium hover:underline">Sign Up</Link>
         </p>
       </div>

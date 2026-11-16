@@ -17,20 +17,20 @@ export default function SortSelect({ value, baseParams }: { value: string; baseP
   };
 
   return (
-    <label className="relative inline-flex items-center">
+    <label className="relative flex items-center">
       <span className="sr-only">Sort products</span>
       <select
         value={value}
         onChange={onChange}
-        className="appearance-none bg-black text-white text-sm pl-6 pr-10 py-3 w-56 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+        className="appearance-none h-10 w-full sm:w-auto pl-4 pr-10 rounded-full bg-white border border-line text-sm font-medium cursor-pointer hover:border-ink focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/15 transition-colors"
       >
         {SORT_OPTIONS.map((o) => (
           <option key={o.value} value={o.value}>
-            {o.label}
+            Sort: {o.label}
           </option>
         ))}
       </select>
-      <ChevronDown size={16} className="absolute right-4 text-white pointer-events-none" />
+      <ChevronDown size={16} className="absolute right-3.5 text-muted pointer-events-none" />
     </label>
   );
 }

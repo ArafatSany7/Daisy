@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
-import { Inter, Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
+import type { Metadata, Viewport } from 'next';
+import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -8,24 +8,27 @@ import AOSInit from '@/components/animations/AOSInit';
 import { site } from '@/lib/site';
 
 const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+  variable: '--font-inter',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-heading",
-  subsets: ["latin"],
-});
-
+// One Playfair instance (normal + italic) serves both display headings and the logo.
 const playfair = Playfair_Display({
-  variable: "--font-logo",
-  style: 'italic',
-  subsets: ["latin"],
+  variable: '--font-display-serif',
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
   title: { default: 'Daisy | Timeless womenswear', template: '%s | Daisy' },
   description: site.description,
+};
+
+export const viewport: Viewport = {
+  themeColor: '#FBF9F6',
 };
 
 export default function RootLayout({
@@ -35,11 +38,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning className={`${inter.variable} ${plusJakarta.variable} ${playfair.variable} font-sans antialiased min-h-screen flex flex-col text-foreground bg-background overflow-x-hidden`}>
+      <body
+        suppressHydrationWarning
+        className={`${inter.variable} ${playfair.variable} font-sans antialiased min-h-screen flex flex-col text-ink bg-surface overflow-x-hidden`}
+      >
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:rounded-full"
+        >
+          Skip to content
+        </a>
         <AOSInit />
         <CartProvider>
           <Navbar />
-          <main className="flex-grow">
+          <main id="main" className="flex-grow">
             {children}
           </main>
           <Footer />

@@ -1,17 +1,36 @@
 @import "tailwindcss";
 
+/*
+ * Daisy design tokens
+ * Palette drawn from the catalog photography: ivory backdrops, camel
+ * tones and a single cornflower-blue accent reserved for primary actions.
+ * Contrast (WCAG): ink/surface 16.5:1 · muted/surface 6.2:1 · white/accent 7.5:1
+ *                  white/signal 6.5:1 · muted/well 5.6:1
+ */
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
-  --font-logo: var(--font-logo), ui-serif, Georgia, serif;
+  --font-display: var(--font-display-serif), ui-serif, Georgia, serif;
+  --font-logo: var(--font-display-serif), ui-serif, Georgia, serif;
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
-  --color-price: var(--price);
-  --color-sale: var(--sale);
+  --color-surface: #FBF9F6;     /* page background */
+  --color-well: #F2EEE8;        /* image wells, subtle panels */
+  --color-line: #E6E0D8;        /* borders, dividers */
+  --color-ink: #1C1A17;         /* primary text, dark surfaces */
+  --color-muted: #625D56;       /* secondary text */
+  --color-accent: #2B5687;      /* primary actions only */
+  --color-accent-hover: #234873;
+  --color-signal: #B3261E;      /* sale / discount */
+  --color-success: #2E7D4F;     /* confirmation */
+
+  /* Legacy aliases so untouched pages keep working */
+  --color-background: var(--color-surface);
+  --color-foreground: var(--color-ink);
+  --color-primary: var(--color-accent);
+  --color-secondary: var(--color-well);
+  --color-price: var(--color-ink);
+  --color-sale: var(--color-signal);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -20,46 +39,128 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--color-line);
   }
-}
 
-:root {
-  --background: #FFFFFF;
-  --foreground: #333333;
-  --primary: #7EACCA; /* Steel blue */
-  --secondary: #F8F9FA; /* Light grey for sections */
-  --accent: #222222; /* Dark charcoal for buttons */
-  --price: #28A745; /* Vibrant green for prices */
-  --sale: #FFC107; /* Golden yellow for sale badges */
-}
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
 
-@layer base {
   body {
-    color: var(--foreground);
-    background: var(--background);
+    color: var(--color-ink);
+    background: var(--color-surface);
     font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    color: #111;
+    color: var(--color-ink);
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-accent) 18%, transparent);
   }
 }
 
 .logo-text {
   font-family: var(--font-logo);
+  font-style: italic;
 }
 
-/* Custom Utilities */
+/* Display headings: the serif is spent on headlines only. */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.18em] text-muted;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  @apply inline-flex items-center justify-center gap-2 h-12 px-7 text-sm font-semibold tracking-wide rounded-full select-none;
+  transition:
+    transform 200ms var(--ease-out-soft),
+    box-shadow 250ms var(--ease-out-soft),
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  @apply opacity-50 pointer-events-none;
+}
+
+/* Primary CTA with a soft accent glow (Add to cart, Checkout). */
 .btn-primary {
-  @apply inline-flex items-center justify-center px-6 py-3 bg-primary text-white hover:bg-primary/90 transition-all duration-300 font-medium text-sm;
+  @apply bg-accent text-white;
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.15) inset,
+    0 8px 24px -8px color-mix(in srgb, var(--color-accent) 70%, transparent);
+}
+.btn-primary:hover {
+  @apply bg-accent-hover;
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.15) inset,
+    0 14px 34px -10px color-mix(in srgb, var(--color-accent) 85%, transparent),
+    0 0 0 4px color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.btn-primary:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .btn-dark {
-  @apply inline-flex items-center justify-center px-6 py-3 bg-accent text-white hover:bg-black transition-all duration-300 font-medium text-sm;
+  @apply bg-ink text-white hover:bg-black;
 }
 
-html {
-  scroll-behavior: smooth;
+.btn-outline {
+  @apply border border-ink/20 bg-transparent text-ink hover:border-ink;
+}
+
+.btn-light {
+  @apply bg-white text-ink hover:bg-well;
+}
+
+.link-underline {
+  @apply underline decoration-ink/30 underline-offset-4 hover:decoration-ink transition-colors;
+}
+
+/* Hide scrollbars on horizontally-scrolling chip rows. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

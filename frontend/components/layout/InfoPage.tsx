@@ -23,12 +23,12 @@ export default function InfoPage({
   currentHref: string;
 }) {
   return (
-    <div className="bg-white pb-24">
-      <div className="border-b border-gray-100 py-4">
-        <nav className="container mx-auto px-6 text-sm text-gray-500" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+    <div className="bg-surface pb-24">
+      <div className="border-b border-line py-4">
+        <nav className="container mx-auto px-6 text-sm text-muted" aria-label="Breadcrumb">
+          <Link href="/" className="hover:text-accent transition-colors">Home</Link>
           <span className="mx-2">&gt;</span>
-          <span className="text-gray-900">{title}</span>
+          <span className="text-ink">{title}</span>
         </nav>
       </div>
       <div className="container mx-auto px-6 mt-12 grid grid-cols-1 lg:grid-cols-4 gap-12 max-w-6xl">
@@ -39,8 +39,8 @@ export default function InfoPage({
                 key={l.href}
                 href={l.href}
                 aria-current={l.href === currentHref ? 'page' : undefined}
-                className={`block px-4 py-2 transition-colors ${
-                  l.href === currentHref ? 'bg-gray-100 font-bold text-gray-900' : 'text-gray-600 hover:text-primary'
+                className={`block px-4 py-2.5 rounded-full transition-colors ${
+                  l.href === currentHref ? 'bg-well font-bold text-ink' : 'text-muted hover:text-accent'
                 }`}
               >
                 {l.label}
@@ -49,17 +49,17 @@ export default function InfoPage({
           </nav>
         </aside>
         <article className="lg:col-span-3 max-w-3xl">
-          <h1 className="text-4xl font-bold mb-4">{title}</h1>
-          {intro && <p className="text-gray-600 leading-relaxed mb-10">{intro}</p>}
+          <h1 className="font-display text-4xl mb-4">{title}</h1>
+          {intro && <p className="text-muted leading-relaxed mb-10">{intro}</p>}
           {sections?.map((s) => (
             <section key={s.heading} id={s.id} className="mb-10 scroll-mt-32">
-              <h2 className="text-xl font-bold mb-3">{s.heading}</h2>
-              <div className="text-gray-600 leading-relaxed space-y-3 text-[15px]">{s.body}</div>
+              <h2 className="font-display text-2xl mb-3">{s.heading}</h2>
+              <div className="text-muted leading-relaxed space-y-3 text-[15px]">{s.body}</div>
             </section>
           ))}
           {children}
-          <p className="mt-12 text-sm text-gray-500 border-t border-gray-100 pt-6">
-            Still need help? <Link href="/contact" className="text-primary font-bold hover:underline">Contact our team</Link>.
+          <p className="mt-12 text-sm text-muted border-t border-line pt-6">
+            Still need help? <Link href="/contact" className="text-accent font-semibold hover:underline">Contact our team</Link>.
           </p>
         </article>
       </div>

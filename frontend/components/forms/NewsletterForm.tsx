@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Check, Mail } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState('');
@@ -16,28 +16,29 @@ export default function NewsletterForm() {
 
   if (done) {
     return (
-      <p role="status" className="flex items-center text-[13px] text-white">
-        <Check size={16} className="mr-2 text-[#7596B8]" /> Thanks! You&apos;re on the list.
+      <p role="status" className="flex items-center gap-2 h-12 text-sm text-white">
+        <Check size={18} className="text-[#8FB3DD]" /> Thanks — you&apos;re on the list.
       </p>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col space-y-4">
+    <form onSubmit={onSubmit} className="flex gap-2">
+      <label htmlFor="newsletter-email" className="sr-only">
+        Email address
+      </label>
       <input
+        id="newsletter-email"
         type="email"
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        aria-label="Email address"
-        className="bg-[#2A2A2A] text-white px-4 py-3 text-[13px] border border-[#333] focus:border-[#7596B8] outline-none w-full placeholder-gray-500"
+        placeholder="Your email"
+        autoComplete="email"
+        className="flex-1 min-w-0 h-12 px-5 rounded-full bg-white/10 text-white text-sm placeholder:text-white/50 border border-white/15 focus:outline-none focus:border-white/50 focus:bg-white/15 transition-colors"
       />
-      <button
-        type="submit"
-        className="bg-[#7596B8] text-white font-medium py-3 px-4 text-[13px] hover:bg-white hover:text-[#7596B8] transition-colors flex items-center justify-center w-full"
-      >
-        <Mail size={14} className="mr-2" strokeWidth={1.5} /> Sign up for the newsletter
+      <button type="submit" className="btn btn-light h-12 px-5 shrink-0" aria-label="Subscribe">
+        Subscribe <ArrowRight size={16} className="hidden sm:block" />
       </button>
     </form>
   );

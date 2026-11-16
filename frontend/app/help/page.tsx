@@ -25,8 +25,8 @@ export default function HelpPage() {
           body: (
             <p>
               Orders over {formatPrice(site.freeShippingThreshold)} ship free. See{' '}
-              <Link href="/shipping" className="underline hover:text-primary">shipping information</Link> for delivery times, or{' '}
-              <Link href="/track-order" className="underline hover:text-primary">track your order</Link>.
+              <Link href="/shipping" className="underline hover:text-accent">shipping information</Link> for delivery times, or{' '}
+              <Link href="/track-order" className="underline hover:text-accent">track your order</Link>.
             </p>
           ),
         },
@@ -35,7 +35,7 @@ export default function HelpPage() {
           body: (
             <p>
               You can return unworn items within {site.returnWindowDays} days. Read our{' '}
-              <Link href="/returns" className="underline hover:text-primary">returns policy</Link> for details.
+              <Link href="/returns" className="underline hover:text-accent">returns policy</Link> for details.
             </p>
           ),
         },
@@ -46,8 +46,8 @@ export default function HelpPage() {
             <>
               <p>Our apparel runs true to size. If you&apos;re between sizes, we recommend sizing up for a relaxed fit.</p>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm border border-gray-100 mt-2">
-                  <thead className="bg-gray-50">
+                <table className="w-full text-sm border border-line mt-2">
+                  <thead className="bg-well">
                     <tr>
                       {['Size', 'Bust (cm)', 'Waist (cm)', 'Hip (cm)'].map((h) => (
                         <th key={h} className="text-left px-4 py-2 font-bold">{h}</th>
@@ -56,7 +56,7 @@ export default function HelpPage() {
                   </thead>
                   <tbody>
                     {sizeRows.map((row) => (
-                      <tr key={row[0]} className="border-t border-gray-100">
+                      <tr key={row[0]} className="border-t border-line">
                         {row.map((cell) => (
                           <td key={cell} className="px-4 py-2">{cell}</td>
                         ))}
@@ -73,7 +73,7 @@ export default function HelpPage() {
           heading: 'Payments',
           body: (
             <p>
-              See <Link href="/payment-methods" className="underline hover:text-primary">payment methods</Link> for the
+              See <Link href="/payment-methods" className="underline hover:text-accent">payment methods</Link> for the
               options we accept.
             </p>
           ),
